@@ -55,6 +55,163 @@
         ]
     };
 
+    function sameInlineMarks(a, b) {
+        return a.length === b.length && a.every((mark, index) => mark === b[index]);
+    }
+
+    function appendInlineSegment(segments, segment) {
+        if (!segment) return;
+
+        const last = segments[segments.length - 1];
+        if (
+            segment.type === "text" &&
+            last?.type === "text" &&
+            sameInlineMarks(last.marks, segment.marks)
+        ) {
+            last.text += segment.text;
+            return;
+        }
+
+        segments.push(segment);
+    }
+
+    function parseInlineText(
+        text,
+        footnoteDefinitions,
+        onFootnoteReference = null,
+        marks = []
+    ) {
+        const segments = [];
+        let index = 0;
+
+        const pushText = (value) => {
+            if (!value) return;
+            appendInlineSegment(segments, {
+                type: "text",
+                text: value,
+                marks: [...marks]
+            });
+        };
+
+        while (index < text.length) {
+            if (text[index] === "\n") {
+                segments.push({ type: "break" });
+                index += 1;
+                continue;
+            }
+
+            if (text.startsWith("**", index)) {
+                const end = text.indexOf("**", index + 2);
+                if (end !== -1) {
+                    const inner = text.slice(index + 2, end);
+                    parseInlineText(
+                        inner,
+                        footnoteDefinitions,
+                        onFootnoteReference,
+                        [...marks, "strong"]
+                    ).forEach((segment) => appendInlineSegment(segments, segment));
+                    index = end + 2;
+                    continue;
+                }
+            }
+
+            if (text.startsWith("<small>", index)) {
+                const end = text.indexOf("</small>", index + 7);
+                if (end !== -1) {
+                    const inner = text.slice(index + 7, end);
+                    parseInlineText(
+                        inner,
+                        footnoteDefinitions,
+                        onFootnoteReference,
+                        [...marks, "small"]
+                    ).forEach((segment) => appendInlineSegment(segments, segment));
+                    index = end + 8;
+                    continue;
+                }
+            }
+
+            const footnote = text.slice(index).match(/^\[\^([^\]]+)\]/);
+            if (footnote) {
+                const id = footnote[1].trim();
+                if (footnoteDefinitions.has(id)) {
+                    if (onFootnoteReference) onFootnoteReference(id);
+                    segments.push({
+                        type: "footnote-ref",
+                        label: id
+                    });
+                    index += footnote[0].length;
+                    continue;
+                }
+            }
+
+            pushText(text[index]);
+            index += 1;
+        }
+
+        return segments;
+    }
+
+    function inlineSegmentLength(segment) {
+        if (segment.type === "text") return [...segment.text].length;
+        return 1;
+    }
+
+    function inlineLength(segments) {
+        return segments.reduce(
+            (total, segment) => total + inlineSegmentLength(segment),
+            0
+        );
+    }
+
+    function sliceInlineSegments(segments, start, count = Infinity) {
+        if (count <= 0) return [];
+
+        const result = [];
+        const end = start + count;
+        let position = 0;
+
+        segments.forEach((segment) => {
+            const length = inlineSegmentLength(segment);
+            const segmentStart = position;
+            const segmentEnd = position + length;
+            position = segmentEnd;
+
+            if (segmentEnd <= start || segmentStart >= end) return;
+
+            if (segment.type !== "text") {
+                result.push({ ...segment });
+                return;
+            }
+
+            const chars = [...segment.text];
+            const from = Math.max(0, start - segmentStart);
+            const to = Math.min(length, end - segmentStart);
+            const text = chars.slice(from, to).join("");
+            if (!text) return;
+
+            appendInlineSegment(result, {
+                ...segment,
+                text,
+                marks: [...segment.marks]
+            });
+        });
+
+        return result;
+    }
+
+    function dropInlineSegments(segments, count) {
+        return sliceInlineSegments(segments, count);
+    }
+
+    function inlinePlainText(segments) {
+        return segments.map((segment) => {
+            if (segment.type === "text") return segment.text;
+            if (segment.type === "break") return " ";
+            if (segment.type === "footnote-ref") return segment.label;
+            return "";
+        }).join("");
+    }
+
     function parseBookMarkdown(md) {
         const book = {
             title: "無題",
@@ -83,27 +240,89 @@
 
         let currentChapter = null;
         let paragraphBuffer = [];
+        let currentList = null;
+        let currentFootnote = null;
+        let pendingParagraphClasses = [];
+        const footnoteDefinitions = new Map();
 
         function flushParagraph() {
-            if (!paragraphBuffer.length || !currentChapter) return;
+            if (!paragraphBuffer.length || !currentChapter) {
+                paragraphBuffer = [];
+                return;
+            }
 
             currentChapter.blocks.push({
                 type: "paragraph",
-                text: paragraphBuffer.join("\n")
+                text: paragraphBuffer.join("\n"),
+                classes: [...pendingParagraphClasses]
             });
             paragraphBuffer = [];
+            pendingParagraphClasses = [];
+        }
+
+        function flushList() {
+            if (!currentList || !currentChapter) {
+                currentList = null;
+                return;
+            }
+
+            currentChapter.blocks.push(currentList);
+            currentList = null;
+        }
+
+        function flushFootnote() {
+            if (!currentFootnote) return;
+
+            footnoteDefinitions.set(
+                currentFootnote.id,
+                currentFootnote.lines.join("\n").trim()
+            );
+            currentFootnote = null;
+        }
+
+        function flushTextBlocks() {
+            flushParagraph();
+            flushList();
+        }
+
+        function resetPendingParagraphStyle() {
+            pendingParagraphClasses = [];
         }
 
         body.split("\n").forEach((rawLine) => {
             const line = rawLine.trim();
 
+            if (currentFootnote) {
+                const continuation = rawLine.match(/^(?: {4}|\t)(.*)$/);
+                if (continuation) {
+                    currentFootnote.lines.push(continuation[1]);
+                    return;
+                }
+                flushFootnote();
+            }
+
             if (!line) {
-                flushParagraph();
+                flushTextBlocks();
                 return;
             }
 
+            const paragraphStyle = line.match(/^\{(.+)\}$/);
+            if (paragraphStyle) {
+                const classes = paragraphStyle[1].trim().split(/\s+/);
+                const allowedClasses = new Set([".no-indent", ".small-text"]);
+
+                if (classes.every((className) => allowedClasses.has(className))) {
+                    flushTextBlocks();
+                    pendingParagraphClasses = classes.map((className) =>
+                        className.slice(1)
+                    );
+                    return;
+                }
+            }
+
             if (line.startsWith("# ")) {
-                flushParagraph();
+                flushTextBlocks();
+                resetPendingParagraphStyle();
                 currentChapter = {
                     title: line.replace(/^#\s+/, ""),
                     blocks: []
@@ -112,10 +331,31 @@
                 return;
             }
 
+            const footnoteDefinition = line.match(/^\[\^([^\]]+)\]:\s*(.*)$/);
+            if (footnoteDefinition) {
+                flushTextBlocks();
+                currentFootnote = {
+                    id: footnoteDefinition[1].trim(),
+                    lines: [footnoteDefinition[2]]
+                };
+                return;
+            }
+
             if (!currentChapter) return;
 
+            if (line.startsWith("### ")) {
+                flushTextBlocks();
+                resetPendingParagraphStyle();
+                currentChapter.blocks.push({
+                    type: "h3",
+                    text: line.replace(/^###\s+/, "")
+                });
+                return;
+            }
+
             if (line.startsWith("## ")) {
-                flushParagraph();
+                flushTextBlocks();
+                resetPendingParagraphStyle();
                 currentChapter.blocks.push({
                     type: "h2",
                     text: line.replace(/^##\s+/, "")
@@ -125,7 +365,8 @@
 
             const image = line.match(/^!\[(.*?)\]\((.*?)\)(\{page\})?$/);
             if (image) {
-                flushParagraph();
+                flushTextBlocks();
+                resetPendingParagraphStyle();
                 currentChapter.blocks.push({
                     type: image[3] ? "full-image" : "image",
                     alt: image[1],
@@ -134,10 +375,125 @@
                 return;
             }
 
+            const unorderedListItem = line.match(/^[-*+]\s+(.+)$/);
+            if (unorderedListItem) {
+                flushParagraph();
+                resetPendingParagraphStyle();
+
+                if (!currentList || currentList.ordered) {
+                    flushList();
+                    currentList = {
+                        type: "list",
+                        ordered: false,
+                        items: []
+                    };
+                }
+
+                currentList.items.push(unorderedListItem[1]);
+                return;
+            }
+
+            const orderedListItem = line.match(/^(\d+)\.\s+(.+)$/);
+            if (orderedListItem) {
+                flushParagraph();
+                resetPendingParagraphStyle();
+
+                if (!currentList || !currentList.ordered) {
+                    flushList();
+                    currentList = {
+                        type: "list",
+                        ordered: true,
+                        start: Number(orderedListItem[1]),
+                        items: []
+                    };
+                }
+
+                currentList.items.push(orderedListItem[2]);
+                return;
+            }
+
+            flushList();
             paragraphBuffer.push(line);
         });
 
-        flushParagraph();
+        flushFootnote();
+        flushTextBlocks();
+
+        const placedFootnotes = new Set();
+
+        function prepareBlockInline(block, onFootnoteReference) {
+            if (["h2", "h3", "paragraph"].includes(block.type)) {
+                block.inline = parseInlineText(
+                    block.text,
+                    footnoteDefinitions,
+                    onFootnoteReference
+                );
+                return;
+            }
+
+            if (block.type === "list") {
+                block.items = block.items.map((text) => ({
+                    text,
+                    inline: parseInlineText(
+                        text,
+                        footnoteDefinitions,
+                        onFootnoteReference
+                    )
+                }));
+            }
+        }
+
+        function createFootnotesBlock(ids) {
+            return {
+                type: "footnotes",
+                items: ids.map((id) => {
+                    const text = footnoteDefinitions.get(id) ?? "";
+                    return {
+                        label: id,
+                        text,
+                        inline: parseInlineText(text, footnoteDefinitions)
+                    };
+                })
+            };
+        }
+
+        function finalizeChapter(chapter) {
+            const output = [];
+            let pendingFootnoteIds = [];
+
+            const registerFootnote = (id) => {
+                if (placedFootnotes.has(id)) return;
+                placedFootnotes.add(id);
+                pendingFootnoteIds.push(id);
+            };
+
+            const flushScopedFootnotes = () => {
+                if (!pendingFootnoteIds.length) return;
+                output.push(createFootnotesBlock(pendingFootnoteIds));
+                pendingFootnoteIds = [];
+            };
+
+            chapter.titleInline = parseInlineText(
+                chapter.title,
+                footnoteDefinitions,
+                registerFootnote
+            );
+            chapter.titleText = inlinePlainText(chapter.titleInline);
+
+            chapter.blocks.forEach((block) => {
+                if (block.type === "h2") {
+                    flushScopedFootnotes();
+                }
+
+                prepareBlockInline(block, registerFootnote);
+                output.push(block);
+            });
+
+            flushScopedFootnotes();
+            chapter.blocks = output;
+        }
+
+        book.chapters.forEach(finalizeChapter);
         return book;
     }
 
@@ -506,21 +862,102 @@
         return element;
     }
 
-    function createParagraph(text, continuation = false) {
-        const paragraph = createTextElement(
-            "p",
-            "",
-            continuation ? "continuation" : ""
-        );
+    function wrapInlineNode(node, marks = []) {
+        let wrapped = node;
 
-        text.split("\n").forEach((line, index) => {
-            if (index > 0) {
-                paragraph.appendChild(document.createElement("br"));
-            }
-            paragraph.appendChild(document.createTextNode(line));
+        [...marks].reverse().forEach((mark) => {
+            const wrapper = document.createElement(mark === "strong" ? "strong" : "small");
+            wrapper.appendChild(wrapped);
+            wrapped = wrapper;
         });
 
+        return wrapped;
+    }
+
+    function appendInlineSegments(parent, segments) {
+        segments.forEach((segment) => {
+            if (segment.type === "break") {
+                parent.appendChild(document.createElement("br"));
+                return;
+            }
+
+            if (segment.type === "footnote-ref") {
+                const reference = document.createElement("sup");
+                reference.className = "footnote-ref";
+                reference.textContent = segment.label;
+                reference.setAttribute("aria-label", `注釈 ${segment.label}`);
+                parent.appendChild(reference);
+                return;
+            }
+
+            if (segment.type === "text") {
+                const textNode = document.createTextNode(segment.text);
+                parent.appendChild(wrapInlineNode(textNode, segment.marks));
+            }
+        });
+    }
+
+    function createInlineElement(tag, segments, className = "") {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        appendInlineSegments(element, segments);
+        return element;
+    }
+
+    function createHeading(level, segments) {
+        return createInlineElement(`h${level}`, segments);
+    }
+
+    function createParagraph(segments, continuation = false, classes = []) {
+        const paragraph = document.createElement("p");
+        paragraph.className = [
+            continuation ? "continuation" : "",
+            ...classes
+        ].filter(Boolean).join(" ");
+        appendInlineSegments(paragraph, segments);
         return paragraph;
+    }
+
+    function createList(block, items = block.items, start = block.start ?? 1, continuation = false) {
+        const list = document.createElement(block.ordered ? "ol" : "ul");
+        list.className = continuation
+            ? "book-list book-list--continuation"
+            : "book-list";
+
+        if (block.ordered && start !== 1) {
+            list.start = start;
+        }
+
+        items.forEach((itemData) => {
+            const item = document.createElement("li");
+            appendInlineSegments(item, itemData.inline);
+            list.appendChild(item);
+        });
+
+        return list;
+    }
+
+    function createFootnotes(items, continuation = false) {
+        const list = document.createElement("ul");
+        list.className = continuation
+            ? "book-footnotes book-footnotes--continuation"
+            : "book-footnotes";
+
+        items.forEach((itemData) => {
+            const item = document.createElement("li");
+
+            if (!continuation) {
+                const label = document.createElement("span");
+                label.className = "book-footnote-label";
+                label.textContent = `${itemData.label}　`;
+                item.appendChild(label);
+            }
+
+            appendInlineSegments(item, itemData.inline);
+            list.appendChild(item);
+        });
+
+        return list;
     }
 
     function createImageBlock(block) {
@@ -654,6 +1091,18 @@
         els.measureBody.appendChild(node);
     }
 
+    function isTrailingHeading(element) {
+        return element?.matches("h1, h2, h3") ?? false;
+    }
+
+    function moveTrailingHeadingToNewPage(chapterIndex) {
+        const heading = els.measureBody.lastElementChild;
+        if (!isTrailingHeading(heading)) return false;
+
+        moveBlockToNewPage(heading, chapterIndex);
+        return true;
+    }
+
     function paginateImageBlock(block, chapterIndex) {
         const node = createImageBlock(block);
         els.measureBody.appendChild(node);
@@ -696,14 +1145,14 @@
         els.measureBody.innerHTML = "";
     }
 
-    function findLargestFittingPrefix(paragraphText, continuation) {
+    function findLargestFittingInlinePrefix(segments, createNode) {
         let low = 1;
-        let high = paragraphText.length;
+        let high = inlineLength(segments);
         let best = 0;
 
         while (low <= high) {
             const mid = Math.floor((low + high) / 2);
-            const node = createParagraph(paragraphText.slice(0, mid), continuation);
+            const node = createNode(sliceInlineSegments(segments, 0, mid));
             els.measureBody.appendChild(node);
 
             const fits = fitsMeasureBody();
@@ -720,39 +1169,224 @@
         return best;
     }
 
-    function paginateParagraph(text, chapterIndex) {
-        let remaining = text;
+    function paginateParagraph(block, chapterIndex) {
+        let remaining = block.inline;
         let continuation = false;
 
-        while (remaining.length > 0) {
-            const fullNode = createParagraph(remaining, continuation);
+        while (inlineLength(remaining) > 0) {
+            const fullNode = createParagraph(
+                remaining,
+                continuation,
+                block.classes
+            );
             els.measureBody.appendChild(fullNode);
 
             if (fitsMeasureBody()) return;
 
             fullNode.remove();
 
-            const fittingLength = findLargestFittingPrefix(remaining, continuation);
+            const fittingLength = findLargestFittingInlinePrefix(
+                remaining,
+                (segments) => createParagraph(
+                    segments,
+                    continuation,
+                    block.classes
+                )
+            );
 
             if (fittingLength === 0) {
-                const trailingHeading = els.measureBody.lastElementChild;
-
-                if (trailingHeading?.tagName === "H2") {
-                    moveBlockToNewPage(trailingHeading, chapterIndex);
-                    continue;
-                }
-
+                if (moveTrailingHeadingToNewPage(chapterIndex)) continue;
                 commitMeasuredPage(chapterIndex);
                 continue;
             }
 
-            const fittingText = remaining.slice(0, fittingLength);
-            els.measureBody.appendChild(createParagraph(fittingText, continuation));
+            els.measureBody.appendChild(
+                createParagraph(
+                    sliceInlineSegments(remaining, 0, fittingLength),
+                    continuation,
+                    block.classes
+                )
+            );
             commitMeasuredPage(chapterIndex);
 
-            remaining = remaining.slice(fittingLength);
+            remaining = dropInlineSegments(remaining, fittingLength);
             continuation = true;
         }
+    }
+
+    function paginateOversizedInlineItem({
+        itemData,
+        chapterIndex,
+        createNode,
+        protectTrailingHeading = false
+    }) {
+        let remaining = itemData.inline;
+        let continuation = false;
+
+        while (inlineLength(remaining) > 0) {
+            const fullNode = createNode(remaining, continuation);
+            els.measureBody.appendChild(fullNode);
+
+            if (fitsMeasureBody()) return;
+            fullNode.remove();
+
+            const fittingLength = findLargestFittingInlinePrefix(
+                remaining,
+                (segments) => createNode(segments, continuation)
+            );
+
+            if (fittingLength === 0) {
+                if (
+                    protectTrailingHeading &&
+                    moveTrailingHeadingToNewPage(chapterIndex)
+                ) {
+                    continue;
+                }
+
+                if (els.measureBody.innerHTML.trim()) {
+                    commitMeasuredPage(chapterIndex);
+                    continue;
+                }
+
+                const fallback = sliceInlineSegments(remaining, 0, 1);
+                els.measureBody.appendChild(
+                    createNode(fallback, continuation)
+                );
+                commitMeasuredPage(chapterIndex);
+                remaining = dropInlineSegments(remaining, 1);
+                continuation = true;
+                continue;
+            }
+
+            els.measureBody.appendChild(
+                createNode(
+                    sliceInlineSegments(remaining, 0, fittingLength),
+                    continuation
+                )
+            );
+            commitMeasuredPage(chapterIndex);
+            remaining = dropInlineSegments(remaining, fittingLength);
+            continuation = true;
+        }
+    }
+
+    function paginateItemCollection({
+        items,
+        chapterIndex,
+        createContainer,
+        appendItem,
+        paginateOversized
+    }) {
+        let index = 0;
+
+        while (index < items.length) {
+            const container = createContainer(index);
+            els.measureBody.appendChild(container);
+            let addedItems = 0;
+
+            while (index < items.length) {
+                const item = appendItem(container, items[index], index);
+
+                if (!fitsMeasureBody()) {
+                    item.remove();
+                    break;
+                }
+
+                index += 1;
+                addedItems += 1;
+            }
+
+            if (index >= items.length) return;
+
+            if (addedItems > 0) {
+                commitMeasuredPage(chapterIndex);
+                continue;
+            }
+
+            container.remove();
+
+            if (els.measureBody.innerHTML.trim()) {
+                commitMeasuredPage(chapterIndex);
+                continue;
+            }
+
+            paginateOversized(items[index], index);
+            index += 1;
+        }
+    }
+
+    function paginateOversizedListItem(block, itemData, start, chapterIndex) {
+        paginateOversizedInlineItem({
+            itemData,
+            chapterIndex,
+            protectTrailingHeading: true,
+            createNode: (segments, continuation) => createList(
+                block,
+                [{ ...itemData, inline: segments }],
+                start,
+                continuation
+            )
+        });
+    }
+
+    function paginateList(block, chapterIndex) {
+        paginateItemCollection({
+            items: block.items,
+            chapterIndex,
+            createContainer: (index) => createList(
+                block,
+                [],
+                (block.start ?? 1) + index
+            ),
+            appendItem: (list, itemData) => {
+                const item = document.createElement("li");
+                appendInlineSegments(item, itemData.inline);
+                list.appendChild(item);
+                return item;
+            },
+            paginateOversized: (itemData, index) => {
+                paginateOversizedListItem(
+                    block,
+                    itemData,
+                    (block.start ?? 1) + index,
+                    chapterIndex
+                );
+            }
+        });
+    }
+
+    function paginateOversizedFootnote(itemData, chapterIndex) {
+        paginateOversizedInlineItem({
+            itemData,
+            chapterIndex,
+            createNode: (segments, continuation) => createFootnotes(
+                [{ ...itemData, inline: segments }],
+                continuation
+            )
+        });
+    }
+
+    function paginateFootnotes(block, chapterIndex) {
+        paginateItemCollection({
+            items: block.items,
+            chapterIndex,
+            createContainer: () => createFootnotes([]),
+            appendItem: (list, itemData) => {
+                const item = document.createElement("li");
+
+                const label = document.createElement("span");
+                label.className = "book-footnote-label";
+                label.textContent = `${itemData.label}　`;
+                item.appendChild(label);
+
+                appendInlineSegments(item, itemData.inline);
+                list.appendChild(item);
+                return item;
+            },
+            paginateOversized: (itemData) => {
+                paginateOversizedFootnote(itemData, chapterIndex);
+            }
+        });
     }
 
     function createColophonSection() {
@@ -762,23 +1396,20 @@
     }
 
     function getColophonBlocks() {
+        const textBlocks = (lines) => lines.map((text) => ({
+            text,
+            className: "colophon__text"
+        }));
+
         return [
+            { text: book.title, className: "colophon__title" },
             { text: "【発行日】", className: "colophon__label" },
             { text: book.published, className: "colophon__text" },
             { text: "【発行元】", className: "colophon__label" },
-            ...COLOPHON.publisher.map((text) => ({
-                text,
-                className: "colophon__text"
-            })),
-            ...COLOPHON.copyright.map((text) => ({
-                text,
-                className: "colophon__text"
-            })),
+            ...textBlocks(COLOPHON.publisher),
+            ...textBlocks(COLOPHON.copyright),
             { text: "【注意】", className: "colophon__label" },
-            ...COLOPHON.notice.map((text) => ({
-                text,
-                className: "colophon__text"
-            }))
+            ...textBlocks(COLOPHON.notice)
         ];
     }
 
@@ -807,6 +1438,40 @@
         commitMeasuredPage(chapterIndex, "colophon");
     }
 
+    function paginateHeading(level, segments, chapterIndex) {
+        const node = createHeading(level, segments);
+        els.measureBody.appendChild(node);
+
+        if (!fitsMeasureBody()) {
+            moveBlockToNewPage(node, chapterIndex);
+        }
+    }
+
+    function paginateBookBlock(block, chapterIndex) {
+        switch (block.type) {
+            case "image":
+                paginateImageBlock(block, chapterIndex);
+                break;
+            case "h2":
+                paginateHeading(2, block.inline, chapterIndex);
+                break;
+            case "h3":
+                paginateHeading(3, block.inline, chapterIndex);
+                break;
+            case "paragraph":
+                paginateParagraph(block, chapterIndex);
+                break;
+            case "list":
+                paginateList(block, chapterIndex);
+                break;
+            case "footnotes":
+                paginateFootnotes(block, chapterIndex);
+                break;
+            default:
+                console.warn(`Unsupported book block type: ${block.type}`);
+        }
+    }
+
     function paginateBook() {
         state.pages = [];
         state.chapterStarts = [];
@@ -826,7 +1491,7 @@
                 if (!headingPending) return;
 
                 els.measureBody.appendChild(
-                    createTextElement("h1", chapter.title)
+                    createHeading(1, chapter.titleInline)
                 );
                 headingPending = false;
             };
@@ -839,25 +1504,7 @@
 
                 ensureChapterHeading();
 
-                switch (block.type) {
-                    case "image":
-                        paginateImageBlock(block, chapterIndex);
-                        break;
-                    case "h2": {
-                        const node = createTextElement("h2", block.text);
-                        els.measureBody.appendChild(node);
-
-                        if (!fitsMeasureBody()) {
-                            moveBlockToNewPage(node, chapterIndex);
-                        }
-                        break;
-                    }
-                    case "paragraph":
-                        paginateParagraph(block.text, chapterIndex);
-                        break;
-                    default:
-                        console.warn(`Unsupported book block type: ${block.type}`);
-                }
+                paginateBookBlock(block, chapterIndex);
             });
 
             ensureChapterHeading();
@@ -895,7 +1542,7 @@
         if (page.type === "colophon") return "";
 
         const index = page.chapterIndex ?? 0;
-        return book.chapters[index]?.title ?? book.title;
+        return book.chapters[index]?.titleText ?? book.title;
     }
 
     function updateTocHighlight() {
@@ -1215,7 +1862,7 @@
             const button = document.createElement("button");
             button.className = "toc-button";
             button.dataset.chapterIndex = String(index);
-            button.textContent = chapter.title;
+            button.textContent = chapter.titleText ?? chapter.title;
             fragment.appendChild(button);
         });
 
