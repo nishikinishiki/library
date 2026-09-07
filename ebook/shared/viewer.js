@@ -1589,7 +1589,11 @@
         storage.set(STORAGE.currentPage, state.currentPage);
     }
 
-    function setCurrentPage(index, { render = false, syncUI = true } = {}) {
+    function setCurrentPage(
+        index,
+        { render = false, syncUI = true, notify = true } = {}
+    ) {
+        const previousPage = state.currentPage;
         state.currentPage = clampPageIndex(index);
 
         if (render) {
@@ -1598,6 +1602,14 @@
 
         if (syncUI) {
             updateReadingPositionUI();
+        }
+
+        if (
+            notify &&
+            state.mode === "normal" &&
+            state.currentPage !== previousPage
+        ) {
+            emitReaderState("pagechange");
         }
     }
 
@@ -1610,6 +1622,31 @@
         const page = clampPageIndex(index);
         if (page === 0) return 0;
         return page % 2 === 0 ? page - 1 : page;
+    }
+
+    function getReadingPageNumber() {
+        if (!isSpreadView()) {
+            return state.currentPage + 1;
+        }
+
+        const start = getSpreadStart(state.currentPage);
+
+        if (start === 0) {
+            return 1;
+        }
+
+        return Math.min(start + 2, state.pages.length);
+    }
+
+    function emitReaderState(name) {
+        document.dispatchEvent(
+            new CustomEvent(`reader:${name}`, {
+                detail: {
+                    currentPage: getReadingPageNumber(),
+                    totalPages: state.pages.length
+                }
+            })
+        );
     }
 
     function renderPageStack() {
@@ -1790,6 +1827,10 @@
         document.body.classList.toggle("overview", mode === "overview");
         updateOverviewButton();
         updateReadingPositionUI();
+
+        if (mode === "normal") {
+            emitReaderState("pagechange");
+        }
     }
 
     function closeOverlays() {
@@ -1934,7 +1975,10 @@
                     progress * Math.max(0, state.pages.length - 1)
                 );
 
-            setCurrentPage(nextPage, { syncUI: false });
+            setCurrentPage(nextPage, {
+                syncUI: false,
+                notify: false
+            });
 
             if (fontChange) {
                 setFontCss(state.fontSize, { visible: true, measure: false });
@@ -2432,9 +2476,13 @@
         buildToc();
         configurePageSlider();
 
-        setCurrentPage(state.currentPage, { render: true });
+        setCurrentPage(state.currentPage, {
+            render: true,
+            notify: false
+        });
         els.loading.hidden = true;
         startReaderResizeTracking();
+        emitReaderState("ready");
     }
 
     init();
