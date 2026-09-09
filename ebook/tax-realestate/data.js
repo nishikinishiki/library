@@ -2,7 +2,9 @@ window.bookMarkdown = `
 ---
 title: 【完全保存版】不動産投資と節税
 cover: img/cover.webp
-published: 2026年 5月 1日
+published: 2026-05-01
+description: 不動産投資と税金について、初心者の方でもわかりやすく学べる入門eBook。
+themes: 不動産投資, 節税
 ---
 # 人生100年時代。資産形成、始めてますか？
 ![](img/F_S_chapter_1.webp){page}
