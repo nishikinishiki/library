@@ -7,7 +7,9 @@ window.bookMarkdown = `
 ---
 title: リノベーションマンション投資の魅力
 cover: img/cover.webp
-published: 2026年 9月 1日
+published: 2026-09-01
+description: 築古物件を大きくバリューアップできるリノベーションマンション投資の魅力を紹介。
+themes: 不動産投資
 ---
 # プロローグ
 eBook閲覧、ありがとうございます。本書の目的は、下記の3つです。
