@@ -1,34 +1,49 @@
 (() => {
     "use strict";
 
-    const config = window.EBOOK_CATALOG_CONFIG;
+    const config = window.LIBRARY_CATALOG_CONFIG;
 
     if (!config?.books?.length) {
-        console.error("EBOOK_CATALOG_CONFIG が見つかりません。");
+        console.error("LIBRARY_CATALOG_CONFIG が見つかりません。");
         return;
     }
 
     const state = {
+        view: "ebook",
         books: [],
         theme: "すべて",
         sort: "recommended"
     };
 
     const els = {
-        grid: document.getElementById("ebookGrid"),
+        tabs: [...document.querySelectorAll("[data-catalog-tab]")],
+        description: document.getElementById("catalogDescription"),
+        controls: document.getElementById("catalogControls"),
+        grid: document.getElementById("catalogGrid"),
         status: document.getElementById("catalogStatus"),
         themeFilters: document.getElementById("themeFilters"),
         sortSelect: document.getElementById("sortSelect")
     };
 
+    const descriptions = {
+        ebook:
+            "マンション投資をはじめとした不動産投資の情報から、投資や節税について気になる情報をeBookにまとめました。今後も続々公開予定です。お楽しみに。",
+        video:
+            "不動産投資や資産形成について、動画で学べるセミナーをYouTubeでご覧いただけます。"
+    };
+
     function extractMarkdownSource(source) {
-        const match = source.match(/window\.bookMarkdown\s*=\s*`([\s\S]*?)`\s*;/);
+        const match = source.match(
+            /window\.bookMarkdown\s*=\s*`([\s\S]*?)`\s*;/
+        );
         return match ? match[1] : "";
     }
 
     function parseFrontmatter(source) {
         const markdown = extractMarkdownSource(source);
-        const match = markdown.match(/^\s*---\s*\n([\s\S]*?)\n---/);
+        const match = markdown.match(
+            /^\s*---\s*\n([\s\S]*?)\n---/
+        );
 
         if (!match) {
             throw new Error("frontmatter が見つかりません。");
@@ -60,24 +75,56 @@
 
     function resolveAssetUrl(bookId, value) {
         if (!value) return "";
-        if (/^(?:https?:)?\/\//.test(value) || value.startsWith("/")) {
+
+        if (
+            /^(?:https?:)?\/\//.test(value) ||
+            value.startsWith("/")
+        ) {
             return value;
         }
 
-        return `./${bookId}/${value.replace(/^\.\//, "")}`;
+        return `/ebook/${bookId}/${value.replace(/^\.\//, "")}`;
     }
 
     function getBookHref(book) {
-        return book.href || `./${book.id}/`;
+        return book.href || `/ebook/${book.id}/`;
+    }
+
+    function formatPublishedDate(value) {
+        const match = String(value).match(
+            /^(\d{4})-(\d{2})-(\d{2})$/
+        );
+
+        if (!match) return value;
+
+        const [, year, month, day] = match;
+        return `${year}.${month}.${day}`;
+    }
+
+    function getYoutubeId(value) {
+        try {
+            const url = new URL(value);
+
+            if (url.hostname === "youtu.be") {
+                return url.pathname.split("/").filter(Boolean)[0] || "";
+            }
+
+            return url.searchParams.get("v") || "";
+        } catch {
+            return "";
+        }
     }
 
     async function loadBook(id, recommendedIndex) {
-        const response = await fetch(`./${id}/data.js`, {
-            cache: "no-cache"
-        });
+        const response = await fetch(
+            `/ebook/${id}/data.js`,
+            { cache: "no-cache" }
+        );
 
         if (!response.ok) {
-            throw new Error(`${id}/data.js の取得に失敗しました。`);
+            throw new Error(
+                `${id}/data.js の取得に失敗しました。`
+            );
         }
 
         const source = await response.text();
@@ -87,7 +134,7 @@
             id,
             recommendedIndex,
             ...meta,
-            thumbnail: `./${id}/img/thumbnail.webp`,
+            thumbnail: `/ebook/${id}/img/thumbnail.webp`,
             coverUrl: resolveAssetUrl(id, meta.cover)
         };
     }
@@ -106,7 +153,7 @@
         button.addEventListener("click", () => {
             state.theme = label;
             updateThemeButtons();
-            renderBooks();
+            renderCurrentView();
         });
 
         return button;
@@ -152,32 +199,74 @@
         }
 
         return filtered.sort(
-            (a, b) => a.recommendedIndex - b.recommendedIndex
+            (a, b) =>
+                a.recommendedIndex - b.recommendedIndex
         );
     }
 
-    function createTag(theme) {
+    function createTag(label) {
         const tag = document.createElement("span");
-        tag.className = "ebook-tag";
-        tag.textContent = theme;
+        tag.className = "catalog-tag";
+        tag.textContent = label;
         return tag;
     }
 
-    function createBookCard(book) {
+    function createBaseCard({
+        href,
+        title,
+        imageUrl,
+        external = false,
+        imageClass = ""
+    }) {
         const card = document.createElement("a");
-        card.className = "ebook-card";
-        card.href = getBookHref(book);
-        card.setAttribute("aria-label", `${book.title}を読む`);
+        card.className = "catalog-card";
+        card.href = href;
+        card.setAttribute("aria-label", title);
+
+        if (external) {
+            card.target = "_blank";
+            card.rel = "noopener noreferrer";
+        }
 
         const media = document.createElement("div");
-        media.className = "ebook-card__media";
+        media.className = [
+            "catalog-card__media",
+            imageClass
+        ].filter(Boolean).join(" ");
 
         const image = document.createElement("img");
-        image.className = "ebook-card__image";
-        image.src = book.thumbnail;
+        image.className = "catalog-card__image";
+        image.src = imageUrl;
         image.alt = "";
         image.loading = "lazy";
         image.decoding = "async";
+
+        media.appendChild(image);
+
+        const content = document.createElement("div");
+        content.className = "catalog-card__content";
+
+        card.append(media, content);
+
+        return {
+            card,
+            media,
+            image,
+            content
+        };
+    }
+
+    function createBookCard(book) {
+        const {
+            card,
+            media,
+            image,
+            content
+        } = createBaseCard({
+            href: getBookHref(book),
+            title: `${book.title}を読む`,
+            imageUrl: book.thumbnail
+        });
 
         let fallbackApplied = false;
 
@@ -188,18 +277,15 @@
                 return;
             }
 
-            media.classList.add("ebook-card__media--empty");
+            media.classList.add(
+                "catalog-card__media--empty"
+            );
             image.remove();
         });
 
-        media.appendChild(image);
-
-        const content = document.createElement("div");
-        content.className = "ebook-card__content";
-
         if (book.themes.length) {
             const tags = document.createElement("div");
-            tags.className = "ebook-card__tags";
+            tags.className = "catalog-card__tags";
 
             book.themes.forEach((theme) => {
                 tags.appendChild(createTag(theme));
@@ -209,18 +295,68 @@
         }
 
         const title = document.createElement("h2");
-        title.className = "ebook-card__title";
+        title.className = "catalog-card__title";
         title.textContent = book.title;
         content.appendChild(title);
 
         if (book.description) {
             const description = document.createElement("p");
-            description.className = "ebook-card__description";
+            description.className =
+                "catalog-card__description";
             description.textContent = book.description;
             content.appendChild(description);
         }
 
-        card.append(media, content);
+        if (book.published) {
+            const published = document.createElement("time");
+            published.className = "catalog-card__date";
+            published.dateTime = book.published;
+            published.textContent =
+                formatPublishedDate(book.published);
+            content.appendChild(published);
+        }
+
+        return card;
+    }
+
+    function createVideoCard(video, index) {
+        const youtubeId = getYoutubeId(video.url);
+        const title =
+            video.title || `動画セミナー ${index + 1}`;
+
+        const {
+            card,
+            image,
+            content
+        } = createBaseCard({
+            href: video.url,
+            title: `${title}をYouTubeで見る`,
+            imageUrl:
+                video.thumbnail ||
+                `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`,
+            external: true,
+            imageClass: "catalog-card__media--video"
+        });
+
+        image.addEventListener("error", () => {
+            image.remove();
+        });
+
+        const tags = document.createElement("div");
+        tags.className = "catalog-card__tags";
+        tags.appendChild(createTag("動画セミナー"));
+        content.appendChild(tags);
+
+        const heading = document.createElement("h2");
+        heading.className = "catalog-card__title";
+        heading.textContent = title;
+        content.appendChild(heading);
+
+        const linkText = document.createElement("p");
+        linkText.className = "catalog-card__description";
+        linkText.textContent = "YouTubeで視聴する";
+        content.appendChild(linkText);
+
         return card;
     }
 
@@ -238,12 +374,69 @@
             : "該当するeBookはありません";
     }
 
+    function renderVideos() {
+        const videos = (config.videos || [])
+            .filter((video) => video.url);
+
+        const fragment = document.createDocumentFragment();
+
+        videos.forEach((video, index) => {
+            fragment.appendChild(
+                createVideoCard(video, index)
+            );
+        });
+
+        els.grid.replaceChildren(fragment);
+        els.status.textContent = videos.length
+            ? `${videos.length}本`
+            : "動画セミナーは準備中です";
+    }
+
+    function updateTabs() {
+        els.tabs.forEach((button) => {
+            const active =
+                button.dataset.catalogTab === state.view;
+
+            button.setAttribute(
+                "aria-selected",
+                String(active)
+            );
+            button.tabIndex = active ? 0 : -1;
+        });
+    }
+
+    function renderCurrentView() {
+        const isEbook = state.view === "ebook";
+
+        els.controls.hidden = !isEbook;
+        els.description.textContent =
+            descriptions[state.view];
+
+        if (isEbook) {
+            renderBooks();
+        } else {
+            renderVideos();
+        }
+
+        updateTabs();
+    }
+
+    function bindTabs() {
+        els.tabs.forEach((button) => {
+            button.addEventListener("click", () => {
+                state.view = button.dataset.catalogTab;
+                renderCurrentView();
+            });
+        });
+    }
+
     async function init() {
         renderThemeFilters();
+        bindTabs();
 
         els.sortSelect.addEventListener("change", () => {
             state.sort = els.sortSelect.value;
-            renderBooks();
+            renderCurrentView();
         });
 
         const results = await Promise.allSettled(
@@ -253,7 +446,10 @@
         );
 
         state.books = results
-            .filter((result) => result.status === "fulfilled")
+            .filter(
+                (result) =>
+                    result.status === "fulfilled"
+            )
             .map((result) => result.value);
 
         results.forEach((result, index) => {
@@ -265,7 +461,7 @@
             }
         });
 
-        renderBooks();
+        renderCurrentView();
     }
 
     init();
