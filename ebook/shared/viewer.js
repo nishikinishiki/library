@@ -1395,6 +1395,17 @@
         return section;
     }
 
+    function formatPublishedDate(value) {
+        const match = String(value).match(
+            /^(\d{4})-(\d{2})-(\d{2})$/
+        );
+
+        if (!match) return value;
+
+        const [, year, month, day] = match;
+        return `${year}年${Number(month)}月${Number(day)}日`;
+    }
+
     function getColophonBlocks() {
         const textBlocks = (lines) => lines.map((text) => ({
             text,
@@ -1404,7 +1415,10 @@
         return [
             { text: book.title, className: "colophon__title" },
             { text: "【発行日】", className: "colophon__label" },
-            { text: book.published, className: "colophon__text" },
+            {
+                text: formatPublishedDate(book.published),
+                className: "colophon__text"
+            },
             { text: "【発行元】", className: "colophon__label" },
             ...textBlocks(COLOPHON.publisher),
             ...textBlocks(COLOPHON.copyright),
