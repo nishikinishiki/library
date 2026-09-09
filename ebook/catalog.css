@@ -43,28 +43,13 @@ a {
 .brand {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    color: var(--text);
     text-decoration: none;
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: .02em;
 }
 
-.brand__mark {
-    width: 18px;
-    height: 18px;
-    display: inline-block;
-    background:
-        linear-gradient(
-            160deg,
-            var(--brand) 0 28%,
-            transparent 28% 36%,
-            var(--brand) 36% 64%,
-            transparent 64% 72%,
-            var(--brand) 72% 100%
-        );
-    transform: skewY(-8deg);
+.brand__logo {
+    display: block;
+    width: auto;
+    height: 28px;
 }
 
 .catalog-main {
@@ -338,8 +323,8 @@ a {
         padding-top: 18px;
     }
 
-    .brand {
-        font-size: 18px;
+    .brand__logo {
+        height: 24px;
     }
 
     .catalog-main {
