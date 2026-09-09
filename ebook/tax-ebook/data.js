@@ -2,7 +2,9 @@ window.bookMarkdown = `
 ---
 title: 節税ebook
 cover: img/cover.webp
-published: 2026年 1月 1日
+published: 2026-01-01
+description: ふるさと納税やiDeCoなど、日本の税金と代表的な節税方法について解説。
+themes: 節税
 ---
 # 日本の税金について知る
 ![](img/WP_30_tobira.webp){page}
