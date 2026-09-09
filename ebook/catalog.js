@@ -21,7 +21,7 @@
         controls: document.getElementById("catalogControls"),
         grid: document.getElementById("catalogGrid"),
         status: document.getElementById("catalogStatus"),
-        themeFilters: document.getElementById("themeFilters"),
+        themeSelect: document.getElementById("themeSelect"),
         sortSelect: document.getElementById("sortSelect")
     };
 
@@ -139,45 +139,18 @@
         };
     }
 
-    function createThemeChip(label) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "theme-chip";
-        button.textContent = label;
-        button.dataset.theme = label;
-        button.setAttribute(
-            "aria-pressed",
-            String(label === state.theme)
-        );
-
-        button.addEventListener("click", () => {
-            state.theme = label;
-            updateThemeButtons();
-            renderCurrentView();
-        });
-
-        return button;
-    }
-
-    function renderThemeFilters() {
+    function renderThemeOptions() {
         const fragment = document.createDocumentFragment();
 
         ["すべて", ...config.themes].forEach((theme) => {
-            fragment.appendChild(createThemeChip(theme));
+            const option = document.createElement("option");
+            option.value = theme;
+            option.textContent = theme;
+            fragment.appendChild(option);
         });
 
-        els.themeFilters.replaceChildren(fragment);
-    }
-
-    function updateThemeButtons() {
-        els.themeFilters
-            .querySelectorAll(".theme-chip")
-            .forEach((button) => {
-                button.setAttribute(
-                    "aria-pressed",
-                    String(button.dataset.theme === state.theme)
-                );
-            });
+        els.themeSelect.replaceChildren(fragment);
+        els.themeSelect.value = state.theme;
     }
 
     function getVisibleBooks() {
@@ -308,12 +281,21 @@
         }
 
         if (book.published) {
+            const meta = document.createElement("div");
+            meta.className = "catalog-card__meta";
+
+            const label = document.createElement("span");
+            label.className = "catalog-card__meta-label";
+            label.textContent = "PUBLISHED";
+
             const published = document.createElement("time");
             published.className = "catalog-card__date";
             published.dateTime = book.published;
             published.textContent =
                 formatPublishedDate(book.published);
-            content.appendChild(published);
+
+            meta.append(label, published);
+            content.appendChild(meta);
         }
 
         return card;
@@ -431,8 +413,13 @@
     }
 
     async function init() {
-        renderThemeFilters();
+        renderThemeOptions();
         bindTabs();
+
+        els.themeSelect.addEventListener("change", () => {
+            state.theme = els.themeSelect.value;
+            renderCurrentView();
+        });
 
         els.sortSelect.addEventListener("change", () => {
             state.sort = els.sortSelect.value;
