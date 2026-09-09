@@ -98,7 +98,7 @@
         if (!match) return value;
 
         const [, year, month, day] = match;
-        return `${year}.${month}.${day}`;
+        return `${year}年${Number(month)}月${Number(day)}日`;
     }
 
     function getYoutubeId(value) {
@@ -281,21 +281,12 @@
         }
 
         if (book.published) {
-            const meta = document.createElement("div");
-            meta.className = "catalog-card__meta";
-
-            const label = document.createElement("span");
-            label.className = "catalog-card__meta-label";
-            label.textContent = "PUBLISHED";
-
             const published = document.createElement("time");
             published.className = "catalog-card__date";
             published.dateTime = book.published;
             published.textContent =
-                formatPublishedDate(book.published);
-
-            meta.append(label, published);
-            content.appendChild(meta);
+                `更新日：${formatPublishedDate(book.published)}`;
+            content.appendChild(published);
         }
 
         return card;
