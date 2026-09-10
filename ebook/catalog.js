@@ -315,20 +315,37 @@
             image.remove();
         });
 
-        const tags = document.createElement("div");
-        tags.className = "catalog-card__tags";
-        tags.appendChild(createTag("動画セミナー"));
-        content.appendChild(tags);
+        const info = document.createElement("div");
+        info.className = "catalog-card__video-info";
+
+        if (video.duration) {
+            const duration = document.createElement("span");
+            duration.textContent = `再生時間：${video.duration}`;
+            info.appendChild(duration);
+        }
+
+        if (video.lecturer) {
+            const lecturer = document.createElement("span");
+            lecturer.textContent = `講師：${video.lecturer}`;
+            info.appendChild(lecturer);
+        }
+
+        if (info.childElementCount) {
+            content.appendChild(info);
+        }
 
         const heading = document.createElement("h2");
         heading.className = "catalog-card__title";
         heading.textContent = title;
         content.appendChild(heading);
 
-        const linkText = document.createElement("p");
-        linkText.className = "catalog-card__description";
-        linkText.textContent = "YouTubeで視聴する";
-        content.appendChild(linkText);
+        if (video.description) {
+            const description = document.createElement("p");
+            description.className =
+                "catalog-card__description";
+            description.textContent = video.description;
+            content.appendChild(description);
+        }
 
         return card;
     }
