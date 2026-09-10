@@ -1,8 +1,4 @@
-/*
-  All book-specific content lives here in reading order.
-  chapter.title = H1
-  chapter.blocks = paragraph / h2 / image
-*/
+
 window.bookMarkdown = `
 ---
 title: 大阪築浅物件投資の魅力
