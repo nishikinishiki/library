@@ -176,6 +176,7 @@ a {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 24px;
+    overflow-anchor: none;
 }
 
 .catalog-card {
@@ -377,7 +378,7 @@ a {
     }
 
     .catalog-description {
-        min-height: 5.4em;
+        min-height: 7.2em;
         font-size: 13px;
         line-height: 1.8;
     }
