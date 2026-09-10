@@ -153,17 +153,13 @@
         els.themeSelect.value = state.theme;
     }
 
-    function getVisibleBooks() {
-        const filtered = state.theme === "すべて"
-            ? [...state.books]
-            : state.books.filter((book) =>
-                book.themes.includes(state.theme)
-            );
-
+    function sortItems(items) {
         if (state.sort === "newest") {
-            return filtered.sort((a, b) => {
+            return items.sort((a, b) => {
                 const publishedOrder =
-                    b.published.localeCompare(a.published);
+                    (b.published || "").localeCompare(
+                        a.published || ""
+                    );
 
                 return publishedOrder !== 0
                     ? publishedOrder
@@ -171,10 +167,35 @@
             });
         }
 
-        return filtered.sort(
+        return items.sort(
             (a, b) =>
                 a.recommendedIndex - b.recommendedIndex
         );
+    }
+
+    function filterByTheme(items) {
+        if (state.theme === "すべて") {
+            return [...items];
+        }
+
+        return items.filter((item) =>
+            (item.themes || []).includes(state.theme)
+        );
+    }
+
+    function getVisibleBooks() {
+        return sortItems(filterByTheme(state.books));
+    }
+
+    function getVisibleVideos() {
+        const videos = (config.videos || [])
+            .map((video, recommendedIndex) => ({
+                ...video,
+                recommendedIndex
+            }))
+            .filter((video) => video.url);
+
+        return sortItems(filterByTheme(videos));
     }
 
     function createTag(label) {
@@ -315,23 +336,15 @@
             image.remove();
         });
 
-        const info = document.createElement("div");
-        info.className = "catalog-card__video-info";
+        if ((video.themes || []).length) {
+            const tags = document.createElement("div");
+            tags.className = "catalog-card__tags";
 
-        if (video.duration) {
-            const duration = document.createElement("span");
-            duration.textContent = `再生時間：${video.duration}`;
-            info.appendChild(duration);
-        }
+            video.themes.forEach((theme) => {
+                tags.appendChild(createTag(theme));
+            });
 
-        if (video.lecturer) {
-            const lecturer = document.createElement("span");
-            lecturer.textContent = `講師：${video.lecturer}`;
-            info.appendChild(lecturer);
-        }
-
-        if (info.childElementCount) {
-            content.appendChild(info);
+            content.appendChild(tags);
         }
 
         const heading = document.createElement("h2");
@@ -345,6 +358,33 @@
                 "catalog-card__description";
             description.textContent = video.description;
             content.appendChild(description);
+        }
+
+        const details = document.createElement("div");
+        details.className = "catalog-card__details";
+
+        if (video.lecturer) {
+            const lecturer = document.createElement("div");
+            lecturer.textContent = `講師：${video.lecturer}`;
+            details.appendChild(lecturer);
+        }
+
+        if (video.duration) {
+            const duration = document.createElement("div");
+            duration.textContent = `再生時間：${video.duration}`;
+            details.appendChild(duration);
+        }
+
+        if (video.published) {
+            const published = document.createElement("time");
+            published.dateTime = video.published;
+            published.textContent =
+                `更新日：${formatPublishedDate(video.published)}`;
+            details.appendChild(published);
+        }
+
+        if (details.childElementCount) {
+            content.appendChild(details);
         }
 
         return card;
@@ -365,9 +405,7 @@
     }
 
     function renderVideos() {
-        const videos = (config.videos || [])
-            .filter((video) => video.url);
-
+        const videos = getVisibleVideos();
         const fragment = document.createDocumentFragment();
 
         videos.forEach((video, index) => {
@@ -398,7 +436,6 @@
     function renderCurrentView() {
         const isEbook = state.view === "ebook";
 
-        els.controls.hidden = !isEbook;
         els.description.textContent =
             descriptions[state.view];
 
