@@ -42,7 +42,7 @@
                 description: "生涯の納税額は2億円？！今回は医師のための、「不動産投資を活用した節税」。具体的な節税シミュレーションで、いくら節税できるかを徹底解説。",
                 themes: ["節税","資産形成"],
                 published: "2026-04-13",
-                url: "https://m.youtube.com/watch?v=qL4tXyGl3fY"
+                url: "https://www.youtube.com/watch?v=qL4tXyGl3fY"
             },
             {
                 title: "投資効率爆上がりセミナー～前編～",
@@ -68,7 +68,7 @@
                 lecturer: "【コラボ】マッキーとワンルーム投資チャンネル×染谷重幸",
                 description: "ワンルームマンション投資で利益を増やすカギは、「買い方」だけでなく出口戦略（売り方）も重要！業界トップクラスの営業マンから利益を最大化する考え方や実践的な売却戦略を徹底解説。",
                 themes: ["不動産投資"],
-                published: "2026-12-18",
+                published: "2025-12-18",
                 url: "https://www.youtube.com/watch?v=4sm2HB3koH8"
             },
             {
