@@ -17,8 +17,8 @@
 
     /* Reader dimensions */
     --page-padding-x: clamp(24px, calc(10px + 3.8vw), 48px);
-    --page-padding-y: clamp(40px, calc(34px + 1.6vw), 50px);
-    --bar-height: clamp(60px, calc(52px + 2vw), 72px);
+    --page-padding-y: 28px;
+    --bar-height: 52px;
     --topbar-height: calc(var(--bar-height) + env(safe-area-inset-top, 0px));
     --bottombar-height: calc(var(--bar-height) + env(safe-area-inset-bottom, 0px));
     --reader-page-width: 100vw;
@@ -237,7 +237,7 @@ body.overview {
     margin: 0 0 clamp(1em, calc(0.5em + 2vw), 1.5em);
     font-size: 1.3em;
     font-weight: 700;
-    line-height: 1.5;
+    line-height: 1.4;
     padding-left: 0.5em;
     border-left: 4px solid var(--text);
 }
@@ -246,7 +246,7 @@ body.overview {
     margin: 1.5em 0 0.5em;
     font-size: 1.2em;
     font-weight: 700;
-    line-height: 1.5;
+    line-height: 1.4;
     text-align: left;
 }
 
@@ -254,7 +254,7 @@ body.overview {
     margin: 1.25em 0 0;
     font-size: 1.1em;
     font-weight: 600;
-    line-height: 1.5;
+    line-height: 1.4;
     text-align: left;
 }
 
@@ -350,7 +350,7 @@ body.overview {
 /* ---------- Book images ---------- */
 
 .book-image-block {
-    --book-image-gap: clamp(1em, calc(0.85em + 0.6vw), 1.25em);
+    --book-image-gap: 0.8em;
     position: relative;
     margin: var(--book-image-gap) 0;
 }
@@ -370,7 +370,7 @@ body.overview {
 .book-image-block img {
     display: block;
     width: 100%;
-    max-height: 40vh;
+    max-height: 30vh;
     object-fit: contain;
     border: 1px solid var(--ui-subtle);
 }
@@ -403,7 +403,7 @@ body.overview {
 .book-image-caption {
     margin-top: 0.5em;
     color: var(--text-secondary);
-    font-size: clamp(0.75em, calc(0.69em + 0.25vw), 0.85em);
+    font-size: 0.75em;
     line-height: 1.5;
     text-align: center;
     letter-spacing: 0;

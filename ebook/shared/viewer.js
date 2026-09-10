@@ -19,7 +19,7 @@
 
     const CONFIG = {
         font: {
-            sizes: [14, 17, 20],
+            sizes: [14, 17, 19],
             labels: ["小", "中", "大"],
             defaultSize: 17
         },
