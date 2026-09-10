@@ -11,7 +11,7 @@
             "tax-ebook",
             "3ways",
             "invest-ebook",
-            "land2025",
+            "company",
             "millionaire",
             "nisa",
             "ownersvoice"
