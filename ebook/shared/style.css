@@ -234,7 +234,7 @@ body.overview {
 }
 
 :where(.page-body, .measure-body) h1 {
-    margin: 0 0 clamp(1em, calc(0.5em + 2vw), 1.5em);
+    margin: 0 0 0.8em;
     font-size: 1.3em;
     font-weight: 700;
     line-height: 1.4;
@@ -267,7 +267,7 @@ body.overview {
 }
 
 :where(.page-body, .measure-body) p {
-    margin: 0 0 1.25em;
+    margin: 0 0 1.1em;
     overflow-wrap: anywhere;
 }
 
