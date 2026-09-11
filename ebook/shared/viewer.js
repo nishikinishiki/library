@@ -363,15 +363,25 @@
                 return;
             }
 
-            const image = line.match(/^!\[(.*?)\]\((.*?)\)(\{page\})?$/);
+            const image = line.match(
+                /^!\[(.*?)\]\((.*?)\)(?:\{(page|nozoom)\})?$/
+            );
+
             if (image) {
                 flushTextBlocks();
                 resetPendingParagraphStyle();
+
+                const imageOption = image[3] || "";
+
                 currentChapter.blocks.push({
-                    type: image[3] ? "full-image" : "image",
+                    type: imageOption === "page"
+                        ? "full-image"
+                        : "image",
                     alt: image[1],
-                    src: image[2]
+                    src: image[2],
+                    zoomable: imageOption !== "nozoom"
                 });
+
                 return;
             }
 
@@ -721,10 +731,17 @@
     }
 
     function getReaderImage(target) {
-        if (!(target instanceof Element)) return null;
+        if (!(target instanceof Element)) {
+            return null;
+        }
 
-        const block = target.closest(".book-image-block");
-        if (!block?.closest(".stage")) return null;
+        const block = target.closest(
+            ".book-image-block--zoomable"
+        );
+
+        if (!block?.closest(".stage")) {
+            return null;
+        }
 
         return block.querySelector("img");
     }
@@ -964,6 +981,16 @@
         const figure = document.createElement("figure");
         figure.className = "book-image-block";
 
+        if (block.zoomable === false) {
+            figure.classList.add(
+                "book-image-block--nozoom"
+            );
+        } else {
+            figure.classList.add(
+                "book-image-block--zoomable"
+            );
+        }
+
         const frame = document.createElement("div");
         frame.className = "book-image-frame";
 
@@ -978,15 +1005,26 @@
         img.draggable = false;
         frame.appendChild(img);
 
-        const zoomIcon = document.createElement("span");
-        zoomIcon.className = "book-image-zoom-icon";
-        zoomIcon.setAttribute("aria-hidden", "true");
-        zoomIcon.innerHTML = `
-            <svg viewBox="0 0 24 24">
-                <path d="M7 14H5v5h5v-2H7v-3Zm-2-4h2V7h3V5H5v5Zm12 7h-3v2h5v-5h-2v3Zm-3-12v2h3v3h2V5h-5Z"/>
-            </svg>
-        `;
-        frame.appendChild(zoomIcon);
+        if (block.zoomable !== false) {
+            const zoomIcon =
+                document.createElement("span");
+
+            zoomIcon.className =
+                "book-image-zoom-icon";
+
+            zoomIcon.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+            zoomIcon.innerHTML = `
+        <svg viewBox="0 0 24 24">
+            <path d="M7 14H5v5h5v-2H7v-3Zm-2-4h2V7h3V5H5v5Zm12 7h-3v2h5v-5h-2v3Zm-3-12v2h3v3h2V5h-5Z"/>
+        </svg>
+    `;
+
+            frame.appendChild(zoomIcon);
+        }
 
         figure.appendChild(frame);
 

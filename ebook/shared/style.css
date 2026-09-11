@@ -370,9 +370,21 @@ body.overview {
 .book-image-block img {
     display: block;
     width: 100%;
-    max-height: 30vh;
+    max-height: 25vh;
     object-fit: contain;
     border: 1px solid var(--ui-subtle);
+}
+
+.book-image-block--nozoom {
+    --book-image-gap: 0.5em;
+}
+
+.book-image-block--nozoom .book-image-frame {
+    width: 75%;
+}
+
+.book-image-block--nozoom img {
+    max-height: 18vh;
 }
 
 .book-image-zoom-icon {
@@ -743,6 +755,7 @@ body.overview .overview-scroller {
 @media (min-width: 1024px) {
     :root {
         --reader-page-width: 50vw;
+        --page-padding-y: 50px;
     }
 
     .measure-page,
@@ -799,12 +812,12 @@ body.overview .overview-scroller {
         left: 25vw;
     }
 
-    .stage .page-card--next .book-image-block {
+    .stage .page-card--next .book-image-block--zoomable {
         pointer-events: auto;
         cursor: zoom-in;
     }
 
-    .stage .page-card--next .book-image-block::before {
+    .stage .page-card--next .book-image-block--zoomable::before {
         pointer-events: auto;
     }
 }
@@ -834,12 +847,12 @@ body.overview .overview-scroller {
 
 /* ---------- Image viewer ---------- */
 
-.stage .page-card--current .book-image-block {
+.stage .page-card--current .book-image-block--zoomable {
     pointer-events: auto;
     cursor: zoom-in;
 }
 
-.stage .page-card--current .book-image-block::before {
+.stage .page-card--current .book-image-block--zoomable::before {
     pointer-events: auto;
 }
 
