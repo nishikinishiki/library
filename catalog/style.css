@@ -234,6 +234,11 @@ a {
     margin-bottom: 8px;
 }
 
+.catalog-card--video .catalog-card__tags {
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
 .catalog-tag {
     --catalog-tag-color: #178e86;
     padding: 3px 7px;
@@ -247,6 +252,8 @@ a {
 
 .catalog-duration {
     --catalog-tag-color: #777;
+    flex: 0 0 auto;
+    margin-left: auto;
 }
 
 .catalog-card__title {
