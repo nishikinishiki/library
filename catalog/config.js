@@ -1,6 +1,9 @@
 (() => {
     "use strict";
 
+    const CATALOG_DESCRIPTION =
+        "マンション投資をはじめとした不動産投資の情報から、投資や節税について気になる情報をeBookにまとめました。今後も続々公開予定です。お楽しみに。";
+
     window.LIBRARY_CATALOG_CONFIG = Object.freeze({
         books: [
             "land2026",
@@ -27,8 +30,8 @@
         ],
 
         descriptions: {
-            ebook: "マンション投資をはじめとした不動産投資の情報から、投資や節税について気になる情報をeBookにまとめました。今後も続々公開予定です。お楽しみに。",
-            video: "不動産投資や資産形成について、動画で学べるセミナーをYouTubeでご覧いただけます。"
+            ebook: CATALOG_DESCRIPTION,
+            video: CATALOG_DESCRIPTION
         },
 
         videos: [
