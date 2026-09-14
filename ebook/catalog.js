@@ -477,10 +477,6 @@
 
         appendCardMeta(content, [
             {
-                label: "講師",
-                value: video.lecturer
-            },
-            {
                 label: "再生時間",
                 value: video.duration
             },
