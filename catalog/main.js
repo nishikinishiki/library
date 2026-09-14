@@ -17,44 +17,21 @@
 
     const state = {
         view: "ebook",
-
         items: {
             ebook: [],
             video: []
-        },
-
-        filters: {
-            ebook: {
-                theme: "すべて",
-                sort: "recommended"
-            },
-            video: {
-                theme: "すべて",
-                sort: "recommended"
-            }
         }
     };
 
     const els = {
         tabs: [...document.querySelectorAll("[data-catalog-tab]")],
         description: document.getElementById("catalogDescription"),
-        grid: document.getElementById("catalogGrid"),
-        status: document.getElementById("catalogStatus"),
-        themeSelect: document.getElementById("themeSelect"),
-        sortSelect: document.getElementById("sortSelect")
+        grid: document.getElementById("catalogGrid")
     };
 
-    const VIEW_CONFIG = {
-        ebook: {
-            unit: "冊",
-            emptyText: "該当するeBookはありません",
-            createCard: createBookCard
-        },
-        video: {
-            unit: "本",
-            emptyText: "該当する動画セミナーはありません",
-            createCard: createVideoCard
-        }
+    const CARD_CREATORS = {
+        ebook: createBookCard,
+        video: createVideoCard
     };
 
     function extractMarkdownSource(source) {
@@ -124,18 +101,7 @@
         return book.href || `/ebook/${book.id}/`;
     }
 
-    function formatPublishedDate(value) {
-        const match = String(value).match(
-            /^(\d{4})-(\d{2})-(\d{2})$/
-        );
-
-        if (!match) return value;
-
-        const [, year, month, day] = match;
-        return `${year}年${Number(month)}月${Number(day)}日`;
-    }
-
-    async function loadBook(id, recommendedIndex) {
+    async function loadBook(id) {
         const response = await fetch(
             `/ebook/${id}/data.js`,
             { cache: "no-cache" }
@@ -153,7 +119,6 @@
         return {
             type: "ebook",
             id,
-            recommendedIndex,
             ...meta,
             href: getBookHref({
                 id,
@@ -169,12 +134,10 @@
     function normalizeVideos(videos) {
         return (videos || [])
             .filter((video) => video.url && video.id)
-            .map((video, recommendedIndex) => ({
+            .map((video) => ({
                 type: "video",
-                recommendedIndex,
                 ...video,
                 themes: parseThemes(video.themes),
-                published: video.published || "",
                 href: video.url,
                 imageUrl:
                     video.thumbnail ||
@@ -184,106 +147,6 @@
 
     function getCurrentItems() {
         return state.items[state.view];
-    }
-
-    function getCurrentFilter() {
-        return state.filters[state.view];
-    }
-
-    function sortItems(items, sort) {
-        const sorted = [...items];
-
-        if (sort === "newest") {
-            return sorted.sort((a, b) => {
-                const publishedOrder =
-                    (b.published || "").localeCompare(
-                        a.published || ""
-                    );
-
-                return publishedOrder !== 0
-                    ? publishedOrder
-                    : a.recommendedIndex - b.recommendedIndex;
-            });
-        }
-
-        return sorted.sort(
-            (a, b) =>
-                a.recommendedIndex - b.recommendedIndex
-        );
-    }
-
-    function filterItems(items, theme) {
-        if (theme === "すべて") {
-            return [...items];
-        }
-
-        return items.filter((item) =>
-            item.themes.includes(theme)
-        );
-    }
-
-    function getVisibleItems() {
-        const filter = getCurrentFilter();
-
-        return sortItems(
-            filterItems(
-                getCurrentItems(),
-                filter.theme
-            ),
-            filter.sort
-        );
-    }
-
-    function getAvailableThemes() {
-        const discovered = [
-            ...new Set(
-                getCurrentItems()
-                    .flatMap((item) => item.themes)
-            )
-        ];
-
-        const preferred = (config.themes || [])
-            .map((theme) => theme.label);
-
-        return [
-            ...preferred.filter((theme) =>
-                discovered.includes(theme)
-            ),
-            ...discovered.filter((theme) =>
-                !preferred.includes(theme)
-            )
-        ];
-    }
-
-    function renderThemeOptions() {
-        const filter = getCurrentFilter();
-        const themes = getAvailableThemes();
-
-        if (
-            filter.theme !== "すべて" &&
-            !themes.includes(filter.theme)
-        ) {
-            filter.theme = "すべて";
-        }
-
-        const fragment = document.createDocumentFragment();
-
-        ["すべて", ...themes].forEach((theme) => {
-            const option = document.createElement("option");
-            option.value = theme;
-            option.textContent = theme;
-            fragment.appendChild(option);
-        });
-
-        els.themeSelect.replaceChildren(fragment);
-        els.themeSelect.value = filter.theme;
-    }
-
-    function syncControls() {
-        const filter = getCurrentFilter();
-
-        renderThemeOptions();
-        els.sortSelect.value = filter.sort;
     }
 
     function createTag(label) {
@@ -303,14 +166,38 @@
         return tag;
     }
 
+    function formatDuration(value) {
+        return String(value || "")
+            .replace(/^約\s*/, "")
+            .trim();
+    }
+
+    function createDurationTag(value) {
+        const duration = document.createElement("span");
+        duration.className =
+            "catalog-tag catalog-duration";
+        duration.textContent = formatDuration(value);
+
+        return duration;
+    }
+
     function appendCardMainContent(content, item) {
-        if (item.themes.length) {
+        const showDuration =
+            item.type === "video" && item.duration;
+
+        if (item.themes.length || showDuration) {
             const tags = document.createElement("div");
             tags.className = "catalog-card__tags";
 
             item.themes.forEach((theme) => {
                 tags.appendChild(createTag(theme));
             });
+
+            if (showDuration) {
+                tags.appendChild(
+                    createDurationTag(item.duration)
+                );
+            }
 
             content.appendChild(tags);
         }
@@ -327,34 +214,6 @@
             description.textContent = item.description;
             content.appendChild(description);
         }
-    }
-
-    function appendCardMeta(content, rows) {
-        const validRows = rows.filter(
-            (row) => row.value
-        );
-
-        if (!validRows.length) return;
-
-        const meta = document.createElement("div");
-        meta.className = "catalog-card__meta";
-
-        validRows.forEach((row) => {
-            const element = row.dateTime
-                ? document.createElement("time")
-                : document.createElement("div");
-
-            if (row.dateTime) {
-                element.dateTime = row.dateTime;
-            }
-
-            element.textContent =
-                `${row.label}：${row.value}`;
-
-            meta.appendChild(element);
-        });
-
-        content.appendChild(meta);
     }
 
     function createBaseCard(item, options = {}) {
@@ -430,15 +289,6 @@
 
         appendCardMainContent(content, book);
 
-        appendCardMeta(content, [
-            {
-                label: "発行日",
-                value:
-                    formatPublishedDate(book.published),
-                dateTime: book.published
-            }
-        ]);
-
         return card;
     }
 
@@ -464,38 +314,19 @@
 
         appendCardMainContent(content, video);
 
-        appendCardMeta(content, [
-            {
-                label: "再生時間",
-                value: video.duration
-            },
-            {
-                label: "発行日",
-                value:
-                    formatPublishedDate(video.published),
-                dateTime: video.published
-            }
-        ]);
-
         return card;
     }
 
     function renderItems() {
-        const items = getVisibleItems();
-        const view = VIEW_CONFIG[state.view];
+        const items = getCurrentItems();
+        const createCard = CARD_CREATORS[state.view];
         const fragment = document.createDocumentFragment();
 
         items.forEach((item) => {
-            fragment.appendChild(
-                view.createCard(item)
-            );
+            fragment.appendChild(createCard(item));
         });
 
         els.grid.replaceChildren(fragment);
-
-        els.status.textContent = items.length
-            ? `${items.length}${view.unit}`
-            : view.emptyText;
     }
 
     function updateTabs() {
@@ -513,14 +344,13 @@
 
     function renderViewHeader() {
         els.description.textContent =
-            config.descriptions?.[state.view] || "";
+            config.descriptions?.ebook || "";
 
         updateTabs();
     }
 
     function renderCurrentView() {
         renderViewHeader();
-        syncControls();
         renderItems();
     }
 
@@ -531,24 +361,6 @@
                 renderCurrentView();
             });
         });
-
-        els.themeSelect.addEventListener(
-            "change",
-            () => {
-                getCurrentFilter().theme =
-                    els.themeSelect.value;
-                renderItems();
-            }
-        );
-
-        els.sortSelect.addEventListener(
-            "change",
-            () => {
-                getCurrentFilter().sort =
-                    els.sortSelect.value;
-                renderItems();
-            }
-        );
     }
 
     async function init() {
@@ -559,9 +371,7 @@
         renderViewHeader();
 
         const results = await Promise.allSettled(
-            config.books.map((id, index) =>
-                loadBook(id, index)
-            )
+            config.books.map((id) => loadBook(id))
         );
 
         state.items.ebook = results
