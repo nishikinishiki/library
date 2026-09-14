@@ -60,11 +60,11 @@ a {
 .catalog-main {
     width: min(var(--content-width), calc(100% - 48px));
     margin: 0 auto;
-    padding: 36px 0 84px;
+    padding: 28px 0 84px;
 }
 
 .catalog-hero {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .catalog-kicker {
@@ -79,7 +79,6 @@ a {
     display: flex;
     align-items: flex-end;
     gap: 28px;
-    margin-bottom: 18px;
 }
 
 .catalog-tab {
@@ -134,7 +133,7 @@ a {
     align-items: center;
     justify-content: flex-end;
     gap: 14px;
-    margin: 0 0 8px;
+    margin: 0 0 18px;
 }
 
 .catalog-select {
