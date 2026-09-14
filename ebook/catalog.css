@@ -258,10 +258,12 @@ a {
 }
 
 .catalog-tag {
+    --catalog-tag-color: #178e86;
+
     padding: 3px 7px;
-    border: 1px solid #b9dfdc;
+    border: 1px solid var(--catalog-tag-color);
     border-radius: 3px;
-    color: #178e86;
+    color: var(--catalog-tag-color);
     font-size: 10px;
     font-weight: 700;
     line-height: 1.25;
