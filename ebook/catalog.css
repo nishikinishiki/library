@@ -61,11 +61,11 @@ a {
 .catalog-main {
     width: min(var(--content-width), calc(100% - 48px));
     margin: 0 auto;
-    padding: 56px 0 88px;
+    padding: 42px 0 84px;
 }
 
 .catalog-hero {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .catalog-kicker {
@@ -123,8 +123,6 @@ a {
 }
 
 .catalog-description {
-    max-width: 980px;
-    min-height: 3.8em;
     margin: 0;
     color: #333;
     font-size: 15px;
@@ -341,11 +339,11 @@ a {
     }
 
     .brand__logo {
-        height: 24px;
+        height: 18px;
     }
 
     .catalog-main {
-        padding-top: 38px;
+        padding-top: 24px;
     }
 
     .catalog-hero {
@@ -362,11 +360,10 @@ a {
     }
 
     .catalog-tab {
-        font-size: 24px;
+        font-size: 18px;
     }
 
     .catalog-description {
-        min-height: 7.2em;
         font-size: 13px;
         line-height: 1.8;
     }
