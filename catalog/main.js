@@ -8,42 +8,26 @@
         return;
     }
 
-    const themeMap = new Map(
-        (config.themes || []).map((theme) => [
-            theme.label,
-            theme
-        ])
-    );
+    const tabs = [
+        ...document.querySelectorAll("[data-catalog-tab]")
+    ];
+    const grid = document.getElementById("catalogGrid");
+    let view = "ebook";
 
-    const state = {
-        view: "ebook",
-        items: {
-            ebook: [],
-            video: []
-        }
+    const items = {
+        ebook: [],
+        video: (config.videos || []).map((video) => ({
+            ...video,
+            type: "video",
+            href: video.url,
+            imageUrl: `/catalog/img/video/${video.id}.webp`
+        }))
     };
-
-    const els = {
-        tabs: [...document.querySelectorAll("[data-catalog-tab]")],
-        description: document.getElementById("catalogDescription"),
-        grid: document.getElementById("catalogGrid")
-    };
-
-    const CARD_CREATORS = {
-        ebook: createBookCard,
-        video: createVideoCard
-    };
-
-    function extractMarkdownSource(source) {
-        const match = source.match(
-            /window\.bookMarkdown\s*=\s*`([\s\S]*?)`\s*;/
-        );
-
-        return match ? match[1] : "";
-    }
 
     function parseFrontmatter(source) {
-        const markdown = extractMarkdownSource(source);
+        const markdown = source.match(
+            /window\.bookMarkdown\s*=\s*`([\s\S]*?)`\s*;/
+        )?.[1] || "";
         const match = markdown.match(
             /^\s*---\s*\n([\s\S]*?)\n---/
         );
@@ -58,9 +42,8 @@
             const separator = line.indexOf(":");
             if (separator < 0) return;
 
-            const key = line.slice(0, separator).trim();
-            const value = line.slice(separator + 1).trim();
-            meta[key] = value;
+            meta[line.slice(0, separator).trim()] =
+                line.slice(separator + 1).trim();
         });
 
         return {
@@ -68,20 +51,12 @@
             cover: meta.cover || "",
             published: meta.published || "",
             description: meta.description || "",
-            themes: parseThemes(meta.themes),
+            themes: String(meta.themes || "")
+                .split(",")
+                .map((theme) => theme.trim())
+                .filter(Boolean),
             href: meta.href || ""
         };
-    }
-
-    function parseThemes(value) {
-        if (Array.isArray(value)) {
-            return value.filter(Boolean);
-        }
-
-        return String(value || "")
-            .split(",")
-            .map((theme) => theme.trim())
-            .filter(Boolean);
     }
 
     function resolveAssetUrl(bookId, value) {
@@ -97,10 +72,6 @@
         return `/ebook/${bookId}/${value.replace(/^\.\//, "")}`;
     }
 
-    function getBookHref(book) {
-        return book.href || `/ebook/${book.id}/`;
-    }
-
     async function loadBook(id) {
         const response = await fetch(
             `/ebook/${id}/data.js`,
@@ -113,89 +84,51 @@
             );
         }
 
-        const source = await response.text();
-        const meta = parseFrontmatter(source);
+        const meta = parseFrontmatter(await response.text());
 
         return {
             type: "ebook",
             id,
             ...meta,
-            href: getBookHref({
-                id,
-                href: meta.href
-            }),
-            imageUrl:
-                `/ebook/${id}/img/thumbnail.webp`,
+            href: meta.href || `/ebook/${id}/`,
+            imageUrl: `/ebook/${id}/img/thumbnail.webp`,
             fallbackImageUrl:
                 resolveAssetUrl(id, meta.cover)
         };
     }
 
-    function normalizeVideos(videos) {
-        return (videos || [])
-            .filter((video) => video.url && video.id)
-            .map((video) => ({
-                type: "video",
-                ...video,
-                themes: parseThemes(video.themes),
-                href: video.url,
-                imageUrl:
-                    video.thumbnail ||
-                    `/catalog/img/video/${video.id}.webp`
-            }));
-    }
-
-    function getCurrentItems() {
-        return state.items[state.view];
-    }
-
-    function createTag(label) {
+    function createTag(label, className = "") {
         const tag = document.createElement("span");
-        tag.className = "catalog-tag";
+        tag.className =
+            `catalog-tag${className ? ` ${className}` : ""}`;
         tag.textContent = label;
 
-        const theme = themeMap.get(label);
-
-        if (theme?.color) {
+        const color = config.themeColors?.[label];
+        if (color) {
             tag.style.setProperty(
                 "--catalog-tag-color",
-                theme.color
+                color
             );
         }
 
         return tag;
     }
 
-    function formatDuration(value) {
-        return String(value || "")
-            .replace(/^約\s*/, "")
-            .trim();
-    }
-
-    function createDurationTag(value) {
-        const duration = document.createElement("span");
-        duration.className =
-            "catalog-tag catalog-duration";
-        duration.textContent = formatDuration(value);
-
-        return duration;
-    }
-
     function appendCardMainContent(content, item) {
-        const showDuration =
-            item.type === "video" && item.duration;
-
-        if (item.themes.length || showDuration) {
+        if (item.themes.length || item.duration) {
             const tags = document.createElement("div");
             tags.className = "catalog-card__tags";
 
-            item.themes.forEach((theme) => {
-                tags.appendChild(createTag(theme));
-            });
+            item.themes.forEach((theme) =>
+                tags.appendChild(createTag(theme))
+            );
 
-            if (showDuration) {
+            if (item.duration) {
                 tags.appendChild(
-                    createDurationTag(item.duration)
+                    createTag(
+                        item.duration,
+                        "catalog-duration"
+                    )
                 );
             }
 
@@ -243,32 +176,20 @@
         image.alt = "";
         image.loading = "lazy";
         image.decoding = "async";
-
         media.appendChild(image);
 
         const content = document.createElement("div");
         content.className = "catalog-card__content";
-
         card.append(media, content);
 
-        return {
-            card,
-            media,
-            image,
-            content
-        };
+        return { card, media, image, content };
     }
 
     function createBookCard(book) {
-        const {
-            card,
-            media,
-            image,
-            content
-        } = createBaseCard(book, {
-            ariaLabel: `${book.title}を読む`
-        });
-
+        const { card, media, image, content } =
+            createBaseCard(book, {
+                ariaLabel: `${book.title}を読む`
+            });
         let fallbackApplied = false;
 
         image.addEventListener("error", () => {
@@ -288,22 +209,17 @@
         });
 
         appendCardMainContent(content, book);
-
         return card;
     }
 
     function createVideoCard(video) {
-        const {
-            card,
-            media,
-            image,
-            content
-        } = createBaseCard(video, {
-            ariaLabel:
-                `${video.title}をYouTubeで見る`,
-            external: true,
-            mediaClass: "catalog-card__media--video"
-        });
+        const { card, media, image, content } =
+            createBaseCard(video, {
+                ariaLabel:
+                    `${video.title}をYouTubeで見る`,
+                external: true,
+                mediaClass: "catalog-card__media--video"
+            });
 
         image.addEventListener("error", () => {
             media.classList.add(
@@ -313,84 +229,54 @@
         });
 
         appendCardMainContent(content, video);
-
         return card;
     }
 
-    function renderItems() {
-        const items = getCurrentItems();
-        const createCard = CARD_CREATORS[state.view];
-        const fragment = document.createDocumentFragment();
-
-        items.forEach((item) => {
-            fragment.appendChild(createCard(item));
-        });
-
-        els.grid.replaceChildren(fragment);
-    }
-
-    function updateTabs() {
-        els.tabs.forEach((button) => {
+    function render() {
+        tabs.forEach((button) => {
             const active =
-                button.dataset.catalogTab === state.view;
-
+                button.dataset.catalogTab === view;
             button.setAttribute(
                 "aria-selected",
                 String(active)
             );
             button.tabIndex = active ? 0 : -1;
         });
-    }
 
-    function renderViewHeader() {
-        els.description.textContent =
-            config.descriptions?.ebook || "";
+        const createCard = view === "ebook"
+            ? createBookCard
+            : createVideoCard;
+        const fragment = document.createDocumentFragment();
 
-        updateTabs();
-    }
-
-    function renderCurrentView() {
-        renderViewHeader();
-        renderItems();
-    }
-
-    function bindEvents() {
-        els.tabs.forEach((button) => {
-            button.addEventListener("click", () => {
-                state.view = button.dataset.catalogTab;
-                renderCurrentView();
-            });
-        });
+        items[view].forEach((item) =>
+            fragment.appendChild(createCard(item))
+        );
+        grid.replaceChildren(fragment);
     }
 
     async function init() {
-        state.items.video =
-            normalizeVideos(config.videos);
-
-        bindEvents();
-        renderViewHeader();
-
-        const results = await Promise.allSettled(
-            config.books.map((id) => loadBook(id))
-        );
-
-        state.items.ebook = results
-            .filter(
-                (result) =>
-                    result.status === "fulfilled"
-            )
-            .map((result) => result.value);
-
-        results.forEach((result, index) => {
-            if (result.status === "rejected") {
-                console.error(
-                    `eBookの読み込みに失敗しました: ${config.books[index]}`,
-                    result.reason
-                );
-            }
+        tabs.forEach((button) => {
+            button.addEventListener("click", () => {
+                view = button.dataset.catalogTab;
+                render();
+            });
         });
 
-        renderCurrentView();
+        items.ebook = (await Promise.all(
+            config.books.map(async (id) => {
+                try {
+                    return await loadBook(id);
+                } catch (error) {
+                    console.error(
+                        `eBookの読み込みに失敗しました: ${id}`,
+                        error
+                    );
+                    return null;
+                }
+            })
+        )).filter(Boolean);
+
+        render();
     }
 
     init();
