@@ -64,7 +64,7 @@ a {
 }
 
 .catalog-hero {
-    margin-bottom: 18px;
+    margin-bottom: 28px;
 }
 
 .catalog-kicker {
@@ -168,7 +168,7 @@ a {
     min-height: 240px;
     display: grid;
     gap: 14px;
-    padding: 20px;
+    padding: 16px 20px;
     border: 1px solid var(--line);
     border-radius: var(--radius-card);
     background: var(--surface);
