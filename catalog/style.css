@@ -70,14 +70,14 @@ a {
     margin: 0 0 12px;
     font-size: 32px;
     font-weight: 800;
-    line-height: 1.45;
+    line-height: 1.4;
     letter-spacing: .02em;
 }
 
 .catalog-tabs {
     display: flex;
     align-items: flex-end;
-    gap: 28px;
+    gap: 32px;
 }
 
 .catalog-tab {
@@ -124,7 +124,7 @@ a {
     color: #333;
     font-size: 15px;
     font-weight: 500;
-    line-height: 1.9;
+    line-height: 1.6;
 }
 
 .catalog-grid {
@@ -135,7 +135,6 @@ a {
 }
 
 .catalog-card {
-    /* min-height: 220px; */
     display: grid;
     gap: 16px;
     padding: 20px 28px;
@@ -157,7 +156,7 @@ a {
 .catalog-card--video {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    gap: 14px;
+    gap: 8px;
 }
 
 .catalog-card:hover {
@@ -191,7 +190,6 @@ a {
     width: 100%;
     aspect-ratio: 16 / 9;
     border-radius: 4px;
-    background: #111;
 }
 
 .catalog-card__media--video .catalog-card__image {
@@ -241,19 +239,21 @@ a {
 
 .catalog-tag {
     --catalog-tag-color: #178e86;
-    padding: 3px 7px;
+    padding: 2px 6px;
     border-radius: 3px;
     color: #fff;
     background: var(--catalog-tag-color);
     font-size: 10px;
     font-weight: 700;
-    line-height: 1.25;
 }
 
 .catalog-duration {
     --catalog-tag-color: #777;
     flex: 0 0 auto;
     margin-left: auto;
+    border: 1.5px solid var(--catalog-tag-color);
+    color: var(--catalog-tag-color);
+    background: var(--surface);
 }
 
 .catalog-card__title {
@@ -266,7 +266,7 @@ a {
 
 .catalog-card__description {
     display: -webkit-box;
-    margin-top: 9px;
+    margin: 9px 0 0;
     overflow: hidden;
     color: #3d3d3d;
     font-size: 12px;
@@ -312,11 +312,11 @@ a {
     }
 
     .brand__logo {
-        height: 18px;
+        height: 16px;
     }
 
     .catalog-main {
-        padding-top: 24px;
+        padding-top: 18px;
     }
 
     .catalog-hero {
@@ -329,7 +329,7 @@ a {
     }
 
     .catalog-tabs {
-        gap: 20px;
+        gap: 22px;
     }
 
     .catalog-tab {
@@ -339,7 +339,6 @@ a {
     .catalog-description {
         margin-bottom: 22px;
         font-size: 13px;
-        line-height: 1.8;
     }
 
     .catalog-grid {
