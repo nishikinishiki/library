@@ -54,13 +54,13 @@ a {
 .brand__logo {
     display: block;
     width: auto;
-    height: 28px;
+    height: 24px;
 }
 
 .catalog-main {
     width: min(var(--content-width), calc(100% - 48px));
     margin: 0 auto;
-    padding: 42px 0 84px;
+    padding: 36px 0 84px;
 }
 
 .catalog-hero {
@@ -365,7 +365,7 @@ a {
     }
 
     .catalog-hero {
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
 
     .catalog-kicker {

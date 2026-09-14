@@ -2,7 +2,7 @@
     "use strict";
 
     const CATALOG_DESCRIPTION =
-        "マンション投資をはじめとした不動産投資の情報から、投資や節税について気になる情報をeBookにまとめました。今後も続々公開予定です。お楽しみに。";
+        "マンション投資をはじめとした不動産投資の情報から、投資や節税について気になる情報をまとめました。今後も続々公開予定です。お楽しみに。";
 
     window.LIBRARY_CATALOG_CONFIG = Object.freeze({
         books: [
