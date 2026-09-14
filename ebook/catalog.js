@@ -8,6 +8,13 @@
         return;
     }
 
+    const themeMap = new Map(
+        (config.themes || []).map((theme) => [
+            theme.label,
+            theme
+        ])
+    );
+
     const state = {
         view: "ebook",
 
@@ -41,15 +48,11 @@
         ebook: {
             unit: "冊",
             emptyText: "該当するeBookはありません",
-            description:
-                "マンション投資をはじめとした不動産投資の情報から、投資や節税について気になる情報をeBookにまとめました。今後も続々公開予定です。お楽しみに。",
             createCard: createBookCard
         },
         video: {
             unit: "本",
             emptyText: "該当する動画セミナーはありません",
-            description:
-                "不動産投資や資産形成について、動画で学べるセミナーをYouTubeでご覧いただけます。",
             createCard: createVideoCard
         }
     };
@@ -255,7 +258,8 @@
             )
         ];
 
-        const preferred = config.themes || [];
+        const preferred = (config.themes || [])
+            .map((theme) => theme.label);
 
         return [
             ...preferred.filter((theme) =>
@@ -302,6 +306,15 @@
         const tag = document.createElement("span");
         tag.className = "catalog-tag";
         tag.textContent = label;
+
+        const theme = themeMap.get(label);
+
+        if (theme?.color) {
+            tag.style.setProperty(
+                "--catalog-tag-color",
+                theme.color
+            );
+        }
 
         return tag;
     }
@@ -513,15 +526,17 @@
         });
     }
 
-    function renderCurrentView() {
-        const view = VIEW_CONFIG[state.view];
-
+    function renderViewHeader() {
         els.description.textContent =
-            view.description;
+            config.descriptions?.[state.view] || "";
 
+        updateTabs();
+    }
+
+    function renderCurrentView() {
+        renderViewHeader();
         syncControls();
         renderItems();
-        updateTabs();
     }
 
     function bindEvents() {
@@ -556,6 +571,7 @@
             normalizeVideos(config.videos);
 
         bindEvents();
+        renderViewHeader();
 
         const results = await Promise.allSettled(
             config.books.map((id, index) =>
