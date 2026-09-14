@@ -159,10 +159,7 @@ a {
 }
 
 .catalog-meta {
-    min-height: 22px;
-    margin: 0 0 12px;
-    color: var(--muted);
-    font-size: 12px;
+    display: none;
 }
 
 .catalog-grid {
