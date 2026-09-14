@@ -375,7 +375,8 @@
 
     function createBaseCard(item, options = {}) {
         const card = document.createElement("a");
-        card.className = "catalog-card";
+        card.className =
+            `catalog-card catalog-card--${item.type}`;
         card.href = item.href;
         card.setAttribute(
             "aria-label",
