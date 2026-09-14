@@ -33,8 +33,8 @@
 
         videos: [
             {
-                id: "realestate-merits-risks",
-                title: "不動産投資の【6つのメリット】【6つのリスク】",
+                id: "merits-risks",
+                title: "不動産投資の【6つのメリット・6つのリスク】",
                 duration: "約18分",
                 lecturer: "稲垣 創太",
                 description: "【「不動産投資」について徹底解説！】の後編をお届け。後編では、不動産投資の覚えておきたい「6つのメリット」と気を付けるべき「6つのリスク」を解説。",
@@ -43,7 +43,7 @@
                 url: "https://www.youtube.com/watch?v=vWo8G20qW18"
             },
             {
-                id: "doctors-prime-tax-simulation",
+                id: "drsprime-tax-sim",
                 title: "【Dr's Prime対談】節税シミュレーション徹底解説！",
                 duration: "約20分",
                 lecturer: "【コラボ】Dr's Prime × 染谷 重幸",
@@ -53,7 +53,7 @@
                 url: "https://www.youtube.com/watch?v=qL4tXyGl3fY"
             },
             {
-                id: "investment-efficiency-part1",
+                id: "seminar-investment-efficiency-1",
                 title: "投資効率爆上がりセミナー～前編～",
                 duration: "約25分",
                 lecturer: "J.P.ReturnsオーナーS様×室田雄飛",
@@ -63,7 +63,7 @@
                 url: "https://www.youtube.com/watch?v=xLocEb3luuE"
             },
             {
-                id: "investment-efficiency-part2",
+                id: "seminar-investment-efficiency-2",
                 title: "投資効率爆上がりセミナー～後編～",
                 duration: "約40分",
                 lecturer: "J.P.ReturnsオーナーS様×室田雄飛",
@@ -73,7 +73,7 @@
                 url: "https://www.youtube.com/watch?v=Fxq90bV7RFU"
             },
             {
-                id: "exit-strategy",
+                id: "mackey-exit-strategy",
                 title: "【利益爆増】ワンルームの虎が教える出口戦略・勝ちたかったらメルカリよりブックオフで売れ！",
                 duration: "約20分",
                 lecturer: "【コラボ】マッキーとワンルーム投資チャンネル×染谷重幸",
@@ -83,7 +83,7 @@
                 url: "https://www.youtube.com/watch?v=4sm2HB3koH8"
             },
             {
-                id: "high-income-success-formula",
+                id: "mackey-success-formula",
                 title: "【買い方・売り方】年収1000万超えたら絶対必見！トップ営業マンが教える…“成功の方程式”",
                 duration: "約14分",
                 lecturer: "【コラボ】マッキーとワンルーム投資チャンネル×染谷重幸",
@@ -93,7 +93,7 @@
                 url: "https://www.youtube.com/watch?v=m8tmkhCwL5E"
             },
             {
-                id: "doctors-prime-tax-asset",
+                id: "drsprime-tax-asset",
                 title: "【Dr's Prime対談】医師のための節税対策＋資産形成",
                 duration: "約23分",
                 lecturer: "【コラボ】Dr's Prime × 染谷 重幸",
@@ -103,7 +103,7 @@
                 url: "https://www.youtube.com/watch?v=qL4tXyGl3fY"
             },
             {
-                id: "tax-seminar",
+                id: "tax",
                 title: "節税セミナー",
                 duration: "約25分",
                 lecturer: "染谷 重幸",
@@ -113,7 +113,7 @@
                 url: "https://www.youtube.com/watch?v=9a0Izi3LUsk"
             },
             {
-                id: "realestate-explained",
+                id: "realestate",
                 title: "不動産投資【徹底解説】",
                 duration: "約18分",
                 lecturer: "稲垣 創太",
@@ -123,7 +123,7 @@
                 url: "https://www.youtube.com/watch?v=NFuumOR-aXE"
             },
             {
-                id: "asset-building-seminar",
+                id: "asset-building",
                 title: "資産形成セミナー",
                 duration: "約25分",
                 lecturer: "染谷 重幸",

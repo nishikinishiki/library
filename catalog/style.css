@@ -4,7 +4,6 @@
     --text: #161616;
     --muted: #686868;
     --line: #e6e6e3;
-    --brand: #0fb6aa;
     --content-width: 1240px;
     --radius-card: 12px;
     --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.045);
@@ -70,7 +69,7 @@ a {
 
 .catalog-kicker {
     margin: 0 0 28px;
-    font-size: clamp(24px, 2.4vw, 36px);
+    font-size: 32px;
     font-weight: 800;
     line-height: 1.45;
     letter-spacing: .02em;
@@ -89,7 +88,7 @@ a {
     border: 0;
     background: transparent;
     color: #888;
-    font-size: clamp(24px, 2.3vw, 36px);
+    font-size: 24px;
     font-weight: 800;
     line-height: 1;
     cursor: pointer;
@@ -135,7 +134,7 @@ a {
     align-items: center;
     justify-content: flex-end;
     gap: 14px;
-    margin: 0 0 28px;
+    margin: 0 0 8px;
 }
 
 .catalog-select {
@@ -174,10 +173,10 @@ a {
 }
 
 .catalog-card {
-    min-height: 260px;
+    min-height: 240px;
     display: grid;
-    gap: 18px;
-    padding: 22px;
+    gap: 14px;
+    padding: 20px;
     border: 1px solid var(--line);
     border-radius: var(--radius-card);
     background: var(--surface);
@@ -241,7 +240,7 @@ a {
 }
 
 .catalog-card__media--video-empty::before {
-    content: "サムネイル準備中";
+    content: "準備中";
     color: #bbb;
     font-size: 12px;
     font-weight: 600;
@@ -290,7 +289,7 @@ a {
     margin: 0;
     font-size: 18px;
     font-weight: 800;
-    line-height: 1.55;
+    line-height: 1.5;
     letter-spacing: .01em;
 }
 
@@ -303,7 +302,7 @@ a {
     font-weight: 500;
     line-height: 1.7;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 3;
 }
 
 .catalog-card__meta {
@@ -311,7 +310,7 @@ a {
     display: grid;
     gap: 3px;
     margin-top: auto;
-    padding-top: 14px;
+    padding-top: 7px;
     color: #8a8a8a;
     font-size: 11px;
     font-weight: 500;
@@ -413,7 +412,6 @@ a {
 
     .catalog-card {
         min-height: 190px;
-        gap: 15px;
         padding: 16px;
     }
 
@@ -432,7 +430,6 @@ a {
 
     .catalog-card__title {
         font-size: 16px;
-        line-height: 1.5;
     }
 
     .catalog-card__description {
