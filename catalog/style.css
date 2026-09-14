@@ -5,7 +5,7 @@
     --muted: #686868;
     --line: #e6e6e3;
     --content-width: 1240px;
-    --radius-card: 12px;
+    --radius-card: 8px;
     --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.045);
 }
 
@@ -165,10 +165,10 @@ a {
 }
 
 .catalog-card {
-    min-height: 240px;
+    /* min-height: 220px; */
     display: grid;
-    gap: 14px;
-    padding: 16px 20px;
+    gap: 16px;
+    padding: 20px 28px;
     border: 1px solid var(--line);
     border-radius: var(--radius-card);
     background: var(--surface);
@@ -212,7 +212,7 @@ a {
     display: block;
     width: 100%;
     height: 100%;
-    max-height: 216px;
+    max-height: 190px;
     object-fit: contain;
 }
 
@@ -220,7 +220,7 @@ a {
     align-self: start;
     width: 100%;
     aspect-ratio: 16 / 9;
-    border-radius: 7px;
+    border-radius: 4px;
     background: #111;
 }
 
@@ -242,13 +242,11 @@ a {
     content: "eBook";
     display: grid;
     width: 100%;
-    min-height: 180px;
+    min-height: 170px;
     place-items: center;
-    border: 1px solid var(--line);
-    border-radius: 8px;
     color: #aaa;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
 }
 
 .catalog-card__content {
@@ -256,22 +254,22 @@ a {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    margin: 6px 0;
 }
 
 .catalog-card__tags {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .catalog-tag {
     --catalog-tag-color: #178e86;
-
     padding: 3px 7px;
-    border: 1px solid var(--catalog-tag-color);
     border-radius: 3px;
-    color: var(--catalog-tag-color);
+    color: #fff;
+    background: var(--catalog-tag-color);
     font-size: 10px;
     font-weight: 700;
     line-height: 1.25;
@@ -279,20 +277,20 @@ a {
 
 .catalog-card__title {
     margin: 0;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 800;
-    line-height: 1.5;
+    line-height: 1.4;
     letter-spacing: .01em;
 }
 
 .catalog-card__description {
     display: -webkit-box;
-    margin: 10px 0 0;
+    margin-top: 9px;
     overflow: hidden;
     color: #3d3d3d;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
-    line-height: 1.7;
+    line-height: 1.5;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
 }
@@ -325,7 +323,7 @@ a {
 .site-footer__inner {
     width: min(var(--content-width), calc(100% - 48px));
     margin: 0 auto;
-    padding: 20px 0;
+    padding: 15px 0;
 }
 
 .site-footer__copyright {
@@ -426,17 +424,7 @@ a {
     }
 
     .catalog-card__image {
-        max-height: 180px;
-    }
-
-    .catalog-card__title {
-        font-size: 16px;
-    }
-
-    .catalog-card__description {
-        margin-top: 9px;
-        font-size: 12px;
-        line-height: 1.65;
+        max-height: 170px;
     }
 
     .catalog-card__meta {
