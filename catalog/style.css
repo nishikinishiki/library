@@ -92,6 +92,14 @@ a {
     cursor: pointer;
 }
 
+.catalog-tab[data-catalog-tab="ebook"] {
+    font-size: 25px;
+}
+
+.catalog-tab[data-catalog-tab="video"] {
+    font-size: 24px;
+}
+
 .catalog-tab::after {
     content: "";
     position: absolute;
@@ -333,6 +341,14 @@ a {
     }
 
     .catalog-tab {
+        font-size: 18px;
+    }
+
+    .catalog-tab[data-catalog-tab="ebook"] {
+        font-size: 19px;
+    }
+
+    .catalog-tab[data-catalog-tab="video"] {
         font-size: 18px;
     }
 
