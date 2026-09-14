@@ -68,7 +68,7 @@ a {
 }
 
 .catalog-kicker {
-    margin: 0 0 28px;
+    margin: 0 0 12px;
     font-size: 32px;
     font-weight: 800;
     line-height: 1.45;
@@ -122,7 +122,7 @@ a {
 }
 
 .catalog-description {
-    margin: 0;
+    margin: 0 0 28px;
     color: #333;
     font-size: 15px;
     font-weight: 500;
@@ -369,7 +369,7 @@ a {
     }
 
     .catalog-kicker {
-        margin-bottom: 22px;
+        margin-bottom: 10px;
         font-size: 23px;
     }
 
@@ -382,6 +382,7 @@ a {
     }
 
     .catalog-description {
+        margin-bottom: 22px;
         font-size: 13px;
         line-height: 1.8;
     }
