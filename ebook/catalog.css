@@ -176,7 +176,6 @@ a {
 .catalog-card {
     min-height: 260px;
     display: grid;
-    grid-template-columns: minmax(116px, 42%) minmax(0, 1fr);
     gap: 18px;
     padding: 22px;
     border: 1px solid var(--line);
@@ -188,6 +187,16 @@ a {
         transform 160ms ease,
         box-shadow 160ms ease,
         border-color 160ms ease;
+}
+
+.catalog-card--ebook {
+    grid-template-columns: minmax(116px, 42%) minmax(0, 1fr);
+}
+
+.catalog-card--video {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 14px;
 }
 
 .catalog-card:hover {
@@ -218,6 +227,7 @@ a {
 
 .catalog-card__media--video {
     align-self: start;
+    width: 100%;
     aspect-ratio: 16 / 9;
     border-radius: 7px;
     background: #111;
@@ -279,14 +289,14 @@ a {
 
 .catalog-card__description {
     display: -webkit-box;
-    margin: 14px 0 0;
+    margin: 10px 0 0;
     overflow: hidden;
     color: #3d3d3d;
     font-size: 13px;
     font-weight: 500;
-    line-height: 1.75;
+    line-height: 1.7;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 5;
+    -webkit-line-clamp: 4;
 }
 
 .catalog-card__meta {
@@ -396,9 +406,17 @@ a {
 
     .catalog-card {
         min-height: 190px;
-        grid-template-columns: minmax(98px, 36%) minmax(0, 1fr);
         gap: 15px;
         padding: 16px;
+    }
+
+    .catalog-card--ebook {
+        grid-template-columns: minmax(98px, 36%) minmax(0, 1fr);
+    }
+
+    .catalog-card--video {
+        grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .catalog-card__image {
@@ -414,7 +432,6 @@ a {
         margin-top: 9px;
         font-size: 12px;
         line-height: 1.65;
-        -webkit-line-clamp: 4;
     }
 
     .catalog-card__meta {
