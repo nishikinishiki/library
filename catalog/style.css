@@ -129,11 +129,7 @@ a {
 }
 
 .catalog-controls {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 14px;
-    margin: 0 0 18px;
+    display: none;
 }
 
 .catalog-select {
@@ -311,6 +307,14 @@ a {
     font-size: 11px;
     font-weight: 500;
     line-height: 1.5;
+}
+
+.catalog-card__meta time {
+    display: none;
+}
+
+.catalog-card--ebook .catalog-card__meta {
+    display: none;
 }
 
 .site-footer {
