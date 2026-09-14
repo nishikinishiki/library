@@ -93,7 +93,7 @@ a {
 }
 
 .catalog-tab[data-catalog-tab="ebook"] {
-    font-size: 25px;
+    font-size: 26px;
 }
 
 .catalog-tab[data-catalog-tab="video"] {
@@ -197,7 +197,6 @@ a {
     align-self: start;
     width: 100%;
     aspect-ratio: 16 / 9;
-    border-radius: 4px;
 }
 
 .catalog-card__media--video .catalog-card__image {

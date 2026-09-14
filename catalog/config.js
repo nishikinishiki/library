@@ -26,7 +26,10 @@
             { label: "資産形成", color: "#2f8a63" },
             { label: "オーナー事例", color: "#9a6bb5" },
             { label: "会社案内", color: "#777777" },
-            { label: "市況", color: "#c47b2c" }
+            { label: "市況", color: "#c47b2c" },
+            { label: "医師", color: "#56C3D9" },
+            { label: "初心者", color: "#D06E5C" },
+            { label: "経験者", color: "#4295BE" }
         ],
 
         descriptions: {
@@ -41,7 +44,7 @@
                 duration: "約18分",
                 lecturer: "稲垣 創太",
                 description: "「不動産投資【徹底解説」」の後編をお届け。後編では、不動産投資の覚えておきたい「6つのメリット」と気を付けるべき「6つのリスク」を解説。",
-                themes: ["不動産投資"],
+                themes: ["不動産投資", "初心者"],
                 published: "2025-12-15",
                 url: "https://www.youtube.com/watch?v=vWo8G20qW18"
             },
@@ -51,7 +54,7 @@
                 duration: "約20分",
                 lecturer: "【コラボ】Dr's Prime × 染谷 重幸",
                 description: "生涯の納税額は2億円？！今回は医師のための、「不動産投資を活用した節税」。具体的な節税シミュレーションで、いくら節税できるかを徹底解説。",
-                themes: ["節税", "資産形成"],
+                themes: ["節税", "資産形成", "医師", "初心者"],
                 published: "2026-04-13",
                 url: "https://www.youtube.com/watch?v=qL4tXyGl3fY"
             },
@@ -101,7 +104,7 @@
                 duration: "約23分",
                 lecturer: "【コラボ】Dr's Prime × 染谷 重幸",
                 description: "医師向けメディアを運営しているDr's Primeとの対談動画。Dr's Prime代表であり、医師である田様が面白いと語った不動産投資の魅力とは？",
-                themes: ["節税", "資産形成"],
+                themes: ["節税", "資産形成", "医師"],
                 published: "2025-11-07",
                 url: "https://www.youtube.com/watch?v=qL4tXyGl3fY"
             },
@@ -141,7 +144,7 @@
                 duration: "約17分",
                 lecturer: "染谷 重幸",
                 description: "今回のテーマは、「医師向けの資産形成」。医師として支払う税金のことや堅実な資産形成など、失敗しないための戦略と戦術をご紹介。",
-                themes: ["資産形成"],
+                themes: ["資産形成", "医師"],
                 published: "2025-12-25",
                 url: "https://www.youtube.com/watch?v=dFriIedkWuE"
             }
