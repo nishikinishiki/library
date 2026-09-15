@@ -153,8 +153,8 @@ a {
 }
 
 .catalog-card--video {
-    grid-template-rows: auto 1fr;
-    gap: 8px;
+    grid-template-rows: auto auto 1fr;
+    gap: 10px;
 }
 
 .catalog-card:hover {
@@ -233,6 +233,8 @@ a {
 
 .catalog-card--video .catalog-card__tags {
     width: 100%;
+    margin-bottom: 0;
+    align-items: center;
     flex-wrap: nowrap;
 }
 
@@ -416,7 +418,7 @@ a {
     }
 
     .catalog-card--video {
-        gap: 12px;
+        gap: 10px;
     }
 
     .catalog-card__image {
