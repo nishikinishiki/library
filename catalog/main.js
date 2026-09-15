@@ -12,7 +12,11 @@
         ...document.querySelectorAll("[data-catalog-tab]")
     ];
     const grid = document.getElementById("catalogGrid");
+    const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    );
     let view = "ebook";
+    let switchTimer = null;
 
     const items = {
         ebook: [],
@@ -253,7 +257,7 @@
         return card;
     }
 
-    function render() {
+    function updateTabs() {
         tabs.forEach((button) => {
             const active =
                 button.dataset.catalogTab === view;
@@ -263,7 +267,9 @@
             );
             button.tabIndex = active ? 0 : -1;
         });
+    }
 
+    function replaceCards() {
         const createCard = view === "ebook"
             ? createBookCard
             : createVideoCard;
@@ -275,11 +281,42 @@
         grid.replaceChildren(fragment);
     }
 
+    function render({ animate = false } = {}) {
+        updateTabs();
+
+        window.clearTimeout(switchTimer);
+
+        if (
+            !animate ||
+            reduceMotion.matches ||
+            !grid.childElementCount
+        ) {
+            grid.classList.remove("is-switching");
+            replaceCards();
+            return;
+        }
+
+        grid.classList.add("is-switching");
+
+        switchTimer = window.setTimeout(() => {
+            replaceCards();
+
+            requestAnimationFrame(() => {
+                grid.classList.remove("is-switching");
+            });
+
+            switchTimer = null;
+        }, 80);
+    }
+
     async function init() {
         tabs.forEach((button) => {
             button.addEventListener("click", () => {
-                view = button.dataset.catalogTab;
-                render();
+                const nextView = button.dataset.catalogTab;
+                if (nextView === view) return;
+
+                view = nextView;
+                render({ animate: true });
             });
         });
 
