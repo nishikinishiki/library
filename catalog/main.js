@@ -114,25 +114,37 @@
         return tag;
     }
 
-    function appendCardMainContent(content, item) {
-        if (item.themes.length || item.duration) {
-            const tags = document.createElement("div");
-            tags.className = "catalog-card__tags";
+    function createCardTags(item) {
+        const themes = item.themes || [];
+        if (!themes.length && !item.duration) return null;
 
-            item.themes.forEach((theme) =>
-                tags.appendChild(createTag(theme))
+        const tags = document.createElement("div");
+        tags.className = "catalog-card__tags";
+
+        themes.forEach((theme) =>
+            tags.appendChild(createTag(theme))
+        );
+
+        if (item.duration) {
+            tags.appendChild(
+                createTag(
+                    item.duration,
+                    "catalog-duration"
+                )
             );
+        }
 
-            if (item.duration) {
-                tags.appendChild(
-                    createTag(
-                        item.duration,
-                        "catalog-duration"
-                    )
-                );
-            }
+        return tags;
+    }
 
-            content.appendChild(tags);
+    function appendCardMainContent(
+        content,
+        item,
+        { includeTags = true } = {}
+    ) {
+        if (includeTags) {
+            const tags = createCardTags(item);
+            if (tags) content.appendChild(tags);
         }
 
         const title = document.createElement("h2");
@@ -228,7 +240,16 @@
             image.remove();
         });
 
-        appendCardMainContent(content, video);
+        const tags = createCardTags(video);
+        if (tags) {
+            card.insertBefore(tags, media);
+        }
+
+        appendCardMainContent(
+            content,
+            video,
+            { includeTags: false }
+        );
         return card;
     }
 
