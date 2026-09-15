@@ -203,24 +203,6 @@ a {
     object-fit: cover;
 }
 
-.catalog-card__media--video-empty::before {
-    content: "準備中";
-    color: #bbb;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.catalog-card__media--empty::before {
-    content: "eBook";
-    display: grid;
-    width: 100%;
-    min-height: 170px;
-    place-items: center;
-    color: #aaa;
-    font-size: 12px;
-    font-weight: 600;
-}
-
 .catalog-card__content {
     min-width: 0;
     display: flex;
@@ -250,13 +232,13 @@ a {
     background: var(--catalog-tag-color);
     font-size: 10px;
     font-weight: 600;
+    border: 1.5px solid var(--catalog-tag-color);
 }
 
 .catalog-duration {
     --catalog-tag-color: #777;
     flex: 0 0 auto;
     margin-left: auto;
-    border: 1.5px solid var(--catalog-tag-color);
     color: var(--catalog-tag-color);
     background: var(--surface);
 }
