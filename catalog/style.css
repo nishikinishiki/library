@@ -2,9 +2,11 @@
     --page-bg: #f7f7f6;
     --surface: #fff;
     --text: #161616;
+    --text-muted: #777;
     --line: #e6e6e3;
     --content-width: 1240px;
     --radius-card: 8px;
+    --radius-control: 10px;
     --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.045);
 }
 
@@ -73,61 +75,55 @@ a {
     letter-spacing: .02em;
 }
 
-.catalog-tabs {
-    display: flex;
-    align-items: flex-end;
-    gap: 32px;
-}
-
-.catalog-tab {
-    position: relative;
-    padding: 0 0 9px;
-    border: 0;
-    background: transparent;
-    color: #888;
-    font-size: 24px;
-    font-weight: 800;
-    line-height: 1;
-    cursor: pointer;
-}
-
-.catalog-tab[data-catalog-tab="ebook"] {
-    font-size: 26px;
-}
-
-.catalog-tab::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 4px;
-    background: transparent;
-}
-
-.catalog-tab[aria-selected="true"] {
-    color: var(--text);
-}
-
-.catalog-tab[aria-selected="true"]::after {
-    background: var(--text);
-}
-
-.catalog-tab:hover {
-    color: var(--text);
-}
-
-.catalog-tab:focus-visible {
-    outline: 3px solid rgba(15, 182, 170, 0.28);
-    outline-offset: 5px;
-}
-
 .catalog-description {
     margin: 0 0 28px;
     color: #333;
     font-size: 15px;
     font-weight: 500;
     line-height: 1.6;
+}
+
+.catalog-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+}
+
+.catalog-tab {
+    min-height: 64px;
+    padding: 12px 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-control);
+    background: var(--surface);
+    color: #aaa;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.035);
+    font-size: clamp(21px, 2vw, 28px);
+    font-weight: 800;
+    line-height: 1.2;
+    cursor: pointer;
+    transition:
+        background-color 160ms ease,
+        color 160ms ease,
+        border-color 160ms ease,
+        box-shadow 160ms ease;
+}
+
+.catalog-tab[aria-selected="true"] {
+    border-color: var(--text);
+    background: var(--text);
+    color: #fff;
+    box-shadow: none;
+}
+
+.catalog-tab:not([aria-selected="true"]):hover {
+    border-color: #d6d6d2;
+    color: #666;
+}
+
+.catalog-tab:focus-visible {
+    outline: 3px solid rgba(15, 182, 170, 0.28);
+    outline-offset: 3px;
 }
 
 .catalog-grid {
@@ -287,12 +283,69 @@ a {
 .site-footer__inner {
     width: min(var(--content-width), calc(100% - 48px));
     margin: 0 auto;
-    padding: 15px 0;
+    padding: 32px 0 16px;
+}
+
+.site-footer__company {
+    max-width: 760px;
+}
+
+.site-footer__company-name {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.site-footer__address {
+    margin: 0;
+    color: #555;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.7;
+}
+
+.site-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin-top: 12px;
+}
+
+.site-footer__links a {
+    color: #444;
+    font-size: 12px;
+    font-weight: 600;
+    text-underline-offset: 3px;
+}
+
+.site-footer__links a:hover {
+    color: var(--text);
+}
+
+.site-footer__links a:focus-visible {
+    outline: 2px solid rgba(15, 182, 170, 0.28);
+    outline-offset: 3px;
+}
+
+.site-footer__licenses {
+    margin-top: 14px;
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.7;
+}
+
+.site-footer__licenses p {
+    margin: 0;
 }
 
 .site-footer__copyright {
-    margin: 0;
-    color: #777;
+    margin: 24px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    color: var(--text-muted);
     text-align: center;
     font-size: 10px;
 }
@@ -331,21 +384,20 @@ a {
         font-size: 23px;
     }
 
-    .catalog-tabs {
-        gap: 22px;
-    }
-
-    .catalog-tab {
-        font-size: 18px;
-    }
-
-    .catalog-tab[data-catalog-tab="ebook"] {
-        font-size: 19px;
-    }
-
     .catalog-description {
         margin-bottom: 22px;
         font-size: 13px;
+    }
+
+    .catalog-tabs {
+        gap: 8px;
+    }
+
+    .catalog-tab {
+        min-height: 50px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-size: 18px;
     }
 
     .catalog-grid {
@@ -369,9 +421,27 @@ a {
     .catalog-card__image {
         max-height: 170px;
     }
+
+    .site-footer__inner {
+        padding-top: 26px;
+    }
+
+    .site-footer__company-name {
+        font-size: 13px;
+    }
+
+    .site-footer__address,
+    .site-footer__links a {
+        font-size: 11px;
+    }
+
+    .site-footer__licenses {
+        font-size: 9px;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .catalog-tab,
     .catalog-card,
     .catalog-card__image {
         transition: none;
