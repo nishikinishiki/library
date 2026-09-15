@@ -4,7 +4,7 @@ title: お金を増やす3つの方法
 cover: img/cover.webp
 published: 2026-03-01
 description: 貯金、投資、融資の3つの方法を比較！話題の新NISAとのかけ合わせ投資術を解説している1冊。
-themes: 資産形成
+themes: 不動産投資, 初心者, 投資
 href: https://jpreturns.com/wp-content/uploads/2022/04/3ways_eBook_1020.pdf
 ---
 # バブル後最大の伸び＆5年連続で上昇中

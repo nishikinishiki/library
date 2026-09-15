@@ -26,7 +26,8 @@
             "市況": "#c47b2c",
             "医師": "#56C3D9",
             "初心者": "#D06E5C",
-            "経験者": "#4295BE"
+            "経験者": "#4295BE",
+            "投資": "#2E8A63"
         },
 
         videos: [
@@ -46,7 +47,7 @@
                 duration: "20分",
                 lecturer: "【コラボ】Dr's Prime × 染谷 重幸",
                 description: "生涯の納税額は2億円？！今回は医師のための、「不動産投資を活用した節税」。具体的な節税シミュレーションで、いくら節税できるかを徹底解説。",
-                themes: ["不動産投資", "節税", "資産形成", "医師"],
+                themes: ["不動産投資", "初心者", "経験者", "医師"],
                 published: "2026-04-13",
                 url: "https://www.youtube.com/watch?v=qL4tXyGl3fY"
             },
@@ -56,7 +57,7 @@
                 duration: "25分",
                 lecturer: "J.P.ReturnsオーナーS様×室田雄飛",
                 description: "オーナー歴17年。15件の投資用マンションを保有する成功オーナー様によるリアル事例をご紹介！家賃収入 年間1500万を生み出す投資戦略とは？",
-                themes: ["不動産投資", "初心者"],
+                themes: ["不動産投資", "経験者"],
                 published: "2025-12-24",
                 url: "https://www.youtube.com/watch?v=xLocEb3luuE"
             },
@@ -66,7 +67,7 @@
                 duration: "40分",
                 lecturer: "J.P.ReturnsオーナーS様×室田雄飛",
                 description: "家賃上昇ってどうなるの？これから都心の不動産投資はどう考えるべき？そんなギモンに、業界歴20年以上のプロが解説。最新不動産市況を徹底解説！",
-                themes: ["不動産投資", "初心者"],
+                themes: ["不動産投資", "経験者"],
                 published: "2026-01-27",
                 url: "https://www.youtube.com/watch?v=Fxq90bV7RFU"
             },
@@ -96,7 +97,7 @@
                 duration: "23分",
                 lecturer: "【コラボ】Dr's Prime × 染谷 重幸",
                 description: "医師向けメディアを運営しているDr's Primeとの対談動画。Dr's Prime代表であり、医師である田様が面白いと語った不動産投資の魅力とは？",
-                themes: ["不動産投資", "節税", "資産形成", "医師"],
+                themes: ["不動産投資", "経験者", "医師", "節税"],
                 published: "2025-11-07",
                 url: "https://www.youtube.com/watch?v=8YKR-dKvpIY"
             },
@@ -106,7 +107,7 @@
                 duration: "25分",
                 lecturer: "染谷 重幸",
                 description: "節税の仕組み・選択肢・年収別の税効果をわかりやすく解説。生命保険控除、確定拠出年金、ふるさと納税、不動産投資についてそれぞれの特徴を約25分間に凝縮したマネーセミナー。",
-                themes: ["不動産投資", "節税"],
+                themes: ["不動産投資", "初心者", "節税"],
                 published: "2026-02-03",
                 url: "https://www.youtube.com/watch?v=9a0Izi3LUsk"
             },
@@ -136,7 +137,7 @@
                 duration: "17分",
                 lecturer: "染谷 重幸",
                 description: "今回のテーマは、「医師向けの資産形成」。医師として支払う税金のことや堅実な資産形成など、失敗しないための戦略と戦術をご紹介。",
-                themes: ["不動産投資", "資産形成", "医師"],
+                themes: ["不動産投資", "初心者", "医師", "節税"],
                 published: "2025-12-25",
                 url: "https://www.youtube.com/watch?v=dFriIedkWuE"
             }

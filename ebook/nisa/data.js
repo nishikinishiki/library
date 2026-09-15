@@ -4,7 +4,7 @@ title: 《新NISA》攻略マニュアル
 cover: img/cover.webp
 published: 2023-10-01
 description: 2024年からの「新NISA」の攻略eBook。始め方やおすすめ銘柄など充実の内容を1冊に凝縮！
-themes: 資産形成
+themes: 初心者, 経験者, 投資
 href: https://jpreturns.com/wp-content/uploads/2023/12/NISA1020.pdf
 ---
 # バブル後最大の伸び＆5年連続で上昇中

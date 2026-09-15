@@ -4,7 +4,7 @@ title: 億り人の投資成功バイブル
 cover: img/cover.webp
 published: 2023-10-01
 description: 資産形成を進めるうえで知っておきたい投資の考え方と実践ポイントを紹介。
-themes: 資産形成
+themes: 不動産投資, 初心者, 投資
 href: https://jpreturns.com/wp-content/uploads/2022/04/TOUSHI_1020.pdf
 ---
 # バブル後最大の伸び＆5年連続で上昇中

@@ -1,10 +1,10 @@
 window.bookMarkdown = `
 ---
-title: 投資ebook
+title: 投資eBook
 cover: img/cover.webp
 published: 2026-01-01
 description: 貯金と投資でどれだけ差が出るのか、投資の種類、リスクとリターンなどをご紹介。
-themes: 不動産投資
+themes: 初心者, 投資
 href: https://jpreturns.com/wp-content/uploads/2022/04/TOUSHI_eBook.pdf
 ---
 # バブル後最大の伸び＆5年連続で上昇中

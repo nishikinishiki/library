@@ -5,7 +5,7 @@ title: 大阪築浅物件投資の魅力
 cover: img/cover.webp
 published: 2025-02-03
 description: 大阪築浅物件のメリットや東京物件との違い、再開発情報などをわかりやすく紹介。
-themes: 不動産投資, 市況
+themes: 不動産投資,初心者, 経験者
 ---
 # はじめに
 ![](img/osaka_tobira_1.webp){page}

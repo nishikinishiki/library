@@ -4,7 +4,7 @@ title: オーナーの声
 cover: img/cover.webp
 published: 2025-10-22
 description: オーナー20名の投資目的や会社選びの決め手となったエピソードをご紹介。
-themes: オーナー事例
+themes: 不動産投資, オーナー事例
 href: https://jpreturns.com/wp-content/uploads/2022/04/Owner-interview20251022.pdf
 ---
 # バブル後最大の伸び＆5年連続で上昇中
