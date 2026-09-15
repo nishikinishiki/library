@@ -129,6 +129,14 @@ a {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 24px;
     overflow-anchor: none;
+    opacity: 1;
+    transition: opacity 120ms ease;
+}
+
+.catalog-grid.is-switching {
+    opacity: 0.3;
+    pointer-events: none;
+    transition-duration: 80ms;
 }
 
 .catalog-card {
@@ -444,9 +452,14 @@ a {
 
 @media (prefers-reduced-motion: reduce) {
     .catalog-tab,
+    .catalog-grid,
     .catalog-card,
     .catalog-card__image {
         transition: none;
+    }
+
+    .catalog-grid.is-switching {
+        opacity: 1;
     }
 
     .catalog-card:hover,
