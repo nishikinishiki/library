@@ -110,7 +110,7 @@ a {
 }
 
 .catalog-tab[aria-selected="true"] {
-    background: var(--text);
+    background: #44B5A4;
     color: #fff;
 }
 
