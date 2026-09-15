@@ -86,22 +86,21 @@ a {
 .catalog-tabs {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: min(100%, 520px);
-    padding: 4px;
+    width: min(100%, 480px);
+    padding: 2px;
     border: 1px solid var(--line);
-    border-radius: 12px;
+    border-radius: var(--radius-control);
     background: var(--surface);
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.035);
+    box-shadow: var(--shadow-card);
 }
 
 .catalog-tab {
-    min-height: 48px;
-    padding: 9px 18px;
+    padding: 7px 18px;
     border: 0;
-    border-radius: 8px;
+    border-radius: var(--radius-control);
     background: transparent;
     color: #aaa;
-    font-size: clamp(20px, 1.8vw, 26px);
+    font-size: 20px;
     font-weight: 800;
     line-height: 1.2;
     cursor: pointer;
@@ -227,7 +226,7 @@ a {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin: 6px 0;
+    margin: 4px 0;
 }
 
 .catalog-card__tags {
@@ -240,7 +239,6 @@ a {
 .catalog-card--video .catalog-card__tags {
     width: 100%;
     margin-bottom: 0;
-    align-items: center;
     flex-wrap: nowrap;
 }
 
@@ -251,7 +249,7 @@ a {
     color: #fff;
     background: var(--catalog-tag-color);
     font-size: 10px;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .catalog-duration {
@@ -389,24 +387,16 @@ a {
 
     .catalog-kicker {
         margin-bottom: 10px;
-        font-size: 23px;
+        font-size: 26px;
     }
 
     .catalog-description {
-        margin-bottom: 22px;
-        font-size: 13px;
-    }
-
-    .catalog-tabs {
-        width: min(100%, 420px);
-        padding: 3px;
-        border-radius: 10px;
+        margin-bottom: 24px;
+        font-size: 14px;
     }
 
     .catalog-tab {
-        min-height: 40px;
-        padding: 8px 12px;
-        border-radius: 7px;
+        padding: 6px 12px;
         font-size: 17px;
     }
 
@@ -418,6 +408,10 @@ a {
     .catalog-card {
         min-height: 190px;
         padding: 16px;
+    }
+
+    .catalog-card__content {
+        margin: 0;
     }
 
     .catalog-card--ebook {

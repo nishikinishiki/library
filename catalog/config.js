@@ -18,8 +18,8 @@
         ],
 
         themeColors: {
-            "不動産投資": "#c74444",
-            "節税": "#3277b8",
+            "不動産投資": "#42BEAD",
+            "節税": "#A67443",
             "資産形成": "#2f8a63",
             "オーナー事例": "#9a6bb5",
             "会社案内": "#777777",
@@ -46,7 +46,7 @@
                 duration: "20分",
                 lecturer: "【コラボ】Dr's Prime × 染谷 重幸",
                 description: "生涯の納税額は2億円？！今回は医師のための、「不動産投資を活用した節税」。具体的な節税シミュレーションで、いくら節税できるかを徹底解説。",
-                themes: ["節税", "資産形成", "医師", "初心者"],
+                themes: ["不動産投資", "節税", "資産形成", "医師"],
                 published: "2026-04-13",
                 url: "https://www.youtube.com/watch?v=qL4tXyGl3fY"
             },
@@ -56,7 +56,7 @@
                 duration: "25分",
                 lecturer: "J.P.ReturnsオーナーS様×室田雄飛",
                 description: "オーナー歴17年。15件の投資用マンションを保有する成功オーナー様によるリアル事例をご紹介！家賃収入 年間1500万を生み出す投資戦略とは？",
-                themes: ["不動産投資", "オーナー事例"],
+                themes: ["不動産投資", "初心者"],
                 published: "2025-12-24",
                 url: "https://www.youtube.com/watch?v=xLocEb3luuE"
             },
@@ -66,7 +66,7 @@
                 duration: "40分",
                 lecturer: "J.P.ReturnsオーナーS様×室田雄飛",
                 description: "家賃上昇ってどうなるの？これから都心の不動産投資はどう考えるべき？そんなギモンに、業界歴20年以上のプロが解説。最新不動産市況を徹底解説！",
-                themes: ["不動産投資", "市況"],
+                themes: ["不動産投資", "初心者"],
                 published: "2026-01-27",
                 url: "https://www.youtube.com/watch?v=Fxq90bV7RFU"
             },
@@ -76,7 +76,7 @@
                 duration: "20分",
                 lecturer: "【コラボ】マッキーとワンルーム投資チャンネル×染谷重幸",
                 description: "ワンルームマンション投資で利益を増やすカギは、「買い方」だけでなく出口戦略（売り方）も重要！業界トップクラスの営業マンから利益を最大化する考え方や実践的な売却戦略を徹底解説。",
-                themes: ["不動産投資"],
+                themes: ["不動産投資", "経験者"],
                 published: "2025-12-18",
                 url: "https://www.youtube.com/watch?v=4sm2HB3koH8"
             },
@@ -86,7 +86,7 @@
                 duration: "14分",
                 lecturer: "【コラボ】マッキーとワンルーム投資チャンネル×染谷重幸",
                 description: "“高属性がワンルーム投資で成功するための方程式”を徹底解説。高収入だからこそ気づきにくい落とし穴や、正しい物件の選び方、無理のない資金計画の組み立て方、そして出口戦略の考え方まで――。",
-                themes: ["不動産投資"],
+                themes: ["不動産投資", "経験者"],
                 published: "2025-12-11",
                 url: "https://www.youtube.com/watch?v=m8tmkhCwL5E"
             },
@@ -96,9 +96,9 @@
                 duration: "23分",
                 lecturer: "【コラボ】Dr's Prime × 染谷 重幸",
                 description: "医師向けメディアを運営しているDr's Primeとの対談動画。Dr's Prime代表であり、医師である田様が面白いと語った不動産投資の魅力とは？",
-                themes: ["節税", "資産形成", "医師"],
+                themes: ["不動産投資", "節税", "資産形成", "医師"],
                 published: "2025-11-07",
-                url: "https://www.youtube.com/watch?v=qL4tXyGl3fY"
+                url: "https://www.youtube.com/watch?v=8YKR-dKvpIY"
             },
             {
                 id: "tax",
@@ -106,7 +106,7 @@
                 duration: "25分",
                 lecturer: "染谷 重幸",
                 description: "節税の仕組み・選択肢・年収別の税効果をわかりやすく解説。生命保険控除、確定拠出年金、ふるさと納税、不動産投資についてそれぞれの特徴を約25分間に凝縮したマネーセミナー。",
-                themes: ["節税"],
+                themes: ["不動産投資", "節税"],
                 published: "2026-02-03",
                 url: "https://www.youtube.com/watch?v=9a0Izi3LUsk"
             },
@@ -116,7 +116,7 @@
                 duration: "18分",
                 lecturer: "稲垣 創太",
                 description: "「不動産投資」について徹底解説！現役トップセールスマンが登壇し、知りたいポイントをまとめてご紹介。初心者はもちろん、経験者の方も知らない知識が得られるかもしれません。こちらの動画では前編をお届け！",
-                themes: ["不動産投資"],
+                themes: ["不動産投資", "初心者"],
                 published: "2025-12-15",
                 url: "https://www.youtube.com/watch?v=NFuumOR-aXE"
             },
@@ -126,7 +126,7 @@
                 duration: "25分",
                 lecturer: "染谷 重幸",
                 description: "資産運用と資産形成についての考え方や不動産投資のコツなど初心者から経験者まで学びやすい内容をコンパクトにまとめてお届け。投資の勉強法についてもご紹介。",
-                themes: ["資産形成"],
+                themes: ["不動産投資", "初心者"],
                 published: "2025-12-25",
                 url: "https://www.youtube.com/watch?v=Bf83X7tSqo0"
             },
@@ -136,7 +136,7 @@
                 duration: "17分",
                 lecturer: "染谷 重幸",
                 description: "今回のテーマは、「医師向けの資産形成」。医師として支払う税金のことや堅実な資産形成など、失敗しないための戦略と戦術をご紹介。",
-                themes: ["資産形成", "医師"],
+                themes: ["不動産投資", "資産形成", "医師"],
                 published: "2025-12-25",
                 url: "https://www.youtube.com/watch?v=dFriIedkWuE"
             }
