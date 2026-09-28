@@ -364,27 +364,28 @@ body.overview {
 
 .book-image-frame {
     position: relative;
+    width: var(--book-image-width, auto);
     margin-inline: auto;
 }
 
 .book-image-block img {
     display: block;
     width: 100%;
-    max-height: 25vh;
+    max-height: var(--book-image-max-height, 25vh);
     object-fit: contain;
     border: 1px solid var(--ui-subtle);
 }
 
 .book-image-block--nozoom {
     --book-image-gap: 0.5em;
+    --book-image-width: 75%;
+    --book-image-max-height: 18vh;
 }
 
-.book-image-block--nozoom .book-image-frame {
-    width: 75%;
-}
-
-.book-image-block--nozoom img {
-    max-height: 18vh;
+/* Temporary size for {size=large}; adjust these two values after device review. */
+.book-image-block--size-large {
+    --book-image-width: 100%;
+    --book-image-max-height: 28vh;
 }
 
 .book-image-zoom-icon {
