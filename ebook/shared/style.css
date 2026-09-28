@@ -382,10 +382,9 @@ body.overview {
     --book-image-max-height: 18vh;
 }
 
-/* Temporary size for {size=large}; adjust these two values after device review. */
 .book-image-block--size-large {
     --book-image-width: 100%;
-    --book-image-max-height: 28vh;
+    --book-image-max-height: 15vh;
 }
 
 .book-image-zoom-icon {
