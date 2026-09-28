@@ -217,6 +217,7 @@
             title: "無題",
             published: "",
             cover: { src: "", alt: "表紙" },
+            fontSizeControl: "visible",
             chapters: []
         };
 
@@ -236,6 +237,13 @@
             if (key === "title") book.title = value;
             if (key === "cover") book.cover.src = value;
             if (key === "published") book.published = value;
+            if (key === "fontSizeControl") {
+                if (value === "visible" || value === "hidden") {
+                    book.fontSizeControl = value;
+                } else {
+                    console.warn(`Invalid fontSizeControl value: ${value}`);
+                }
+            }
         });
 
         let currentChapter = null;
@@ -533,7 +541,7 @@
         </button>
         <div class="topbar__title" id="topbarTitle"></div>
         <div class="topbar__actions">
-          <button class="text-button" aria-label="文字サイズ" title="文字サイズ" popovertarget="displayPopover">Aa</button>
+          <button class="text-button" aria-label="文字サイズ" title="文字サイズ" popovertarget="displayPopover"${book.fontSizeControl === "hidden" ? " hidden" : ""}>Aa</button>
 
           <button class="icon-button" id="overviewButton" aria-label="俯瞰表示" title="俯瞰表示">
             <svg viewBox="0 0 24 24" aria-hidden="true">
