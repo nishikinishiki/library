@@ -212,6 +212,28 @@
         }).join("");
     }
 
+    function parseImageOptions(rawOptions = "") {
+        const options = rawOptions
+            ? rawOptions.trim().split(/\s+/)
+            : [];
+        const selected = new Set(options);
+        const allowed = new Set(["page", "nozoom", "size=large"]);
+
+        if (
+            selected.size !== options.length ||
+            options.some((option) => !allowed.has(option)) ||
+            (selected.has("page") && selected.size > 1)
+        ) {
+            return null;
+        }
+
+        return {
+            type: selected.has("page") ? "full-image" : "image",
+            zoomable: !selected.has("nozoom"),
+            size: selected.has("size=large") ? "large" : "default"
+        };
+    }
+
     function parseBookMarkdown(md) {
         const book = {
             title: "無題",
@@ -375,25 +397,26 @@
             }
 
             const image = line.match(
-                /^!\[(.*?)\]\((.*?)\)(?:\{(page|nozoom)\})?$/
+                /^!\[(.*?)\]\((.*?)\)(?:\{([^{}]+)\})?$/
             );
 
             if (image) {
-                flushTextBlocks();
-                resetPendingParagraphStyle();
+                const options = parseImageOptions(image[3]);
 
-                const imageOption = image[3] || "";
+                if (options) {
+                    flushTextBlocks();
+                    resetPendingParagraphStyle();
 
-                currentChapter.blocks.push({
-                    type: imageOption === "page"
-                        ? "full-image"
-                        : "image",
-                    alt: image[1],
-                    src: image[2],
-                    zoomable: imageOption !== "nozoom"
-                });
+                    currentChapter.blocks.push({
+                        ...options,
+                        alt: image[1],
+                        src: image[2]
+                    });
 
-                return;
+                    return;
+                }
+
+                console.warn(`Invalid image options: ${image[3]}`);
             }
 
             const unorderedListItem = line.match(/^[-*+]\s+(.+)$/);
@@ -999,6 +1022,12 @@
         } else {
             figure.classList.add(
                 "book-image-block--zoomable"
+            );
+        }
+
+        if (block.size === "large") {
+            figure.classList.add(
+                "book-image-block--size-large"
             );
         }
 
