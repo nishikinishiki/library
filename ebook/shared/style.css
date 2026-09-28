@@ -384,7 +384,11 @@ body.overview {
 
 .book-image-block--size-large {
     --book-image-width: 100%;
-    --book-image-max-height: 14vh;
+    --book-image-max-height: none;
+}
+
+.book-image-block--size-large img {
+    height: auto;
 }
 
 .book-image-zoom-icon {
