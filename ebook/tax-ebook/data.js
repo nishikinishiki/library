@@ -1,6 +1,6 @@
 window.bookMarkdown = `
 ---
-title: 節税eBook
+title: 30分で節税理解
 cover: img/cover.webp
 published: 2026-01-01
 description: ふるさと納税やiDeCoなど、日本の税金と代表的な節税方法について解説。

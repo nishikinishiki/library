@@ -1,6 +1,6 @@
 window.bookMarkdown = `
 ---
-title: オーナーの声
+title: オーナーの声 20人の決め手
 cover: img/cover.webp
 published: 2025-10-22
 description: オーナー20名の投資目的や会社選びの決め手となったエピソードをご紹介。

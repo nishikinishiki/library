@@ -1,6 +1,6 @@
 window.bookMarkdown = `
 ---
-title: 【完全保存版】不動産投資と節税
+title: 【完全保存版】不動産投資・節税
 cover: img/cover.webp
 published: 2026-05-01
 description: 不動産投資と税金について、初心者の方でもわかりやすく学べる入門eBook。

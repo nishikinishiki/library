@@ -1,7 +1,7 @@
 
 window.bookMarkdown = `
 ---
-title: 節税のトリセツ！あなたの節税効果が一目でわかる
+title: 節税のトリセツ! あなたの節税効果が一目でわかる!!
 cover: img/cover.webp
 published: 2026-02-01
 description: 不動産投資による節税効果を、年収との関係も含めてわかりやすく解説。

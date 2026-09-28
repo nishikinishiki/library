@@ -11,10 +11,10 @@
             "tax-ebook",
             "3ways",
             "invest-ebook",
-            "company",
             "millionaire",
             "nisa",
-            "ownersvoice"
+            "ownersvoice",
+            "company"
         ],
 
         themeColors: {

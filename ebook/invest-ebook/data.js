@@ -1,6 +1,6 @@
 window.bookMarkdown = `
 ---
-title: 投資eBook
+title: 15分で投資入門
 cover: img/cover.webp
 published: 2026-01-01
 description: 貯金と投資でどれだけ差が出るのか、投資の種類、リスクとリターンなどをご紹介。
