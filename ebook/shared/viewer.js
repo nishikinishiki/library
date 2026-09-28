@@ -323,8 +323,11 @@
             if (line.startsWith("# ")) {
                 flushTextBlocks();
                 resetPendingParagraphStyle();
+                const heading = line.replace(/^#\s+/, "");
+                const tocOnlyMarker = /\s+\{toc-only\}$/;
                 currentChapter = {
-                    title: line.replace(/^#\s+/, ""),
+                    title: heading.replace(tocOnlyMarker, ""),
+                    showHeading: !tocOnlyMarker.test(heading),
                     blocks: []
                 };
                 book.chapters.push(currentChapter);
@@ -1540,7 +1543,7 @@
             let headingPending = true;
 
             const ensureChapterHeading = () => {
-                if (!headingPending) return;
+                if (!headingPending || !chapter.showHeading) return;
 
                 els.measureBody.appendChild(
                     createHeading(1, chapter.titleInline)
