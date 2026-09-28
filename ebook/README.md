@@ -17,6 +17,18 @@
 
 `{toc-only}` と `{page}` はこのリーダー固有の記法です。通常の Markdown ビューアーでは同じようには表示されません。
 
+## 画像の拡大と表示サイズ
+
+```md
+![グラフの説明](img/graph.webp){nozoom}
+![大きく表示するグラフの説明](img/large-graph.webp){nozoom size=large}
+```
+
+- `{nozoom}` は従来どおり、拡大を無効にして幅75％・最大高さ18vhで表示します。
+- `{nozoom size=large}` は拡大を無効にしたまま、幅100％・最大高さ28vhで表示します。仮のサイズは [`shared/style.css`](shared/style.css) の `.book-image-block--size-large` に定義しています。
+- `{size=large}` のみを指定すると、大きく表示しつつ、クリックで拡大できます。
+- `{page}` は独立した画像ページです。`nozoom` や `size=large` とは組み合わせません。
+
 ## 文字サイズボタンの表示
 
 文字サイズの「Aa」ボタンを表示しない冊子では、`data.js` の冒頭に設定します。
