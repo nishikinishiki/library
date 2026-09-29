@@ -32,6 +32,16 @@
 
         videos: [
             {
+                id: "realestate-1",
+                title: "不動産投資徹底解説～前編～",
+                duration: "約18分",
+                lecturer: "稲垣 創太",
+                description: "「不動産投資」について徹底解説！現役トップセールスマンが登壇し、知りたいポイントをまとめてご紹介。初心者はもちろん、経験者の方も知らない知識が得られるかもしれません。こちらの動画では前編をお届け！",
+                themes: ["不動産投資", "初心者"],
+                published: "2025-12-15",
+                url: "https://www.youtube.com/watch?v=NFuumOR-aXE"
+            },
+            {
                 id: "realestate-2",
                 title: "【6つのメリット・6つのリスク】不動産投資徹底解説～後編～",
                 duration: "約18分",
@@ -110,16 +120,6 @@
                 themes: ["不動産投資", "初心者", "節税"],
                 published: "2026-02-03",
                 url: "https://www.youtube.com/watch?v=9a0Izi3LUsk"
-            },
-            {
-                id: "realestate-1",
-                title: "不動産投資徹底解説～前編～",
-                duration: "約18分",
-                lecturer: "稲垣 創太",
-                description: "「不動産投資」について徹底解説！現役トップセールスマンが登壇し、知りたいポイントをまとめてご紹介。初心者はもちろん、経験者の方も知らない知識が得られるかもしれません。こちらの動画では前編をお届け！",
-                themes: ["不動産投資", "初心者"],
-                published: "2025-12-15",
-                url: "https://www.youtube.com/watch?v=NFuumOR-aXE"
             },
             {
                 id: "asset-building",
