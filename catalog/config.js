@@ -4,6 +4,8 @@
     window.LIBRARY_CATALOG_CONFIG = Object.freeze({
         books: [
             "land2026",
+            "ownersvoice20s-30s",
+            "ownersvoice40s-50s",
             "tax-sim",
             "renovation",
             "osaka",
@@ -13,7 +15,6 @@
             "invest-ebook",
             "millionaire",
             "nisa",
-            "ownersvoice",
             "company"
         ],
 
