@@ -162,6 +162,7 @@ a {
 }
 
 .catalog-card {
+    position: relative;
     display: grid;
     gap: 16px;
     padding: 20px 28px;
@@ -174,6 +175,17 @@ a {
         transform 180ms ease,
         box-shadow 180ms ease,
         border-color 180ms ease;
+}
+
+.catalog-card__new-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    display: block;
+    width: auto;
+    height: 43px;
+    pointer-events: none;
 }
 
 .catalog-card--ebook {
@@ -432,6 +444,10 @@ a {
 
     .catalog-card__image {
         max-height: 170px;
+    }
+
+    .catalog-card__new-badge {
+        height: 40px;
     }
 
     .site-footer__inner {

@@ -24,7 +24,8 @@
             ...video,
             type: "video",
             href: video.url,
-            imageUrl: `/catalog/img/video/${video.id}.webp`
+            imageUrl: `/catalog/img/video/${video.id}.webp`,
+            isNew: Boolean(config.newItems?.video?.includes(video.id))
         }))
     };
 
@@ -94,6 +95,7 @@
             type: "ebook",
             id,
             ...meta,
+            isNew: Boolean(config.newItems?.ebook?.includes(id)),
             href: meta.href || `/ebook/${id}/`,
             imageUrl: `/ebook/${id}/img/thumbnail.webp`,
             fallbackImageUrl:
@@ -175,9 +177,13 @@
             options.ariaLabel || item.title
         );
 
-        if (options.external) {
-            card.target = "_blank";
-            card.rel = "noopener noreferrer";
+        if (item.isNew && config.newBadgeImage) {
+            const badge = document.createElement("img");
+            badge.className = "catalog-card__new-badge";
+            badge.src = config.newBadgeImage;
+            badge.alt = "NEW";
+            badge.decoding = "async";
+            card.appendChild(badge);
         }
 
         const media = document.createElement("div");

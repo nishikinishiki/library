@@ -2,10 +2,18 @@
     "use strict";
 
     window.LIBRARY_CATALOG_CONFIG = Object.freeze({
+
+        newBadgeImage: "/catalog/img/badge_new.webp",
+
+        // new表示のID
+        newItems: {
+            ebook: ["roadrating", "ownersvoice20s-30s", "ownersvoice40s-50s"]
+        },
         books: [
-            "land2026",
+            "roadrating",
             "ownersvoice20s-30s",
             "ownersvoice40s-50s",
+            "land2026",
             "tax-sim",
             "renovation",
             "osaka",
